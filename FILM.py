@@ -44,37 +44,37 @@ class Interpolator:
 
     def __call__(self, x0, x1, dt):
         """Interpolate between two frames at a given time step."""
-        inputs = {'x0': x0, 'x1': x1, 'time': dt[..., np.newaxis]}
-        result = self._model(inputs, training=False)
+        inputs = {'x0': x0, 'x1': x1, 'time': dt[..., np.newaxis]} # Prepare input- 2 frames and timestamp
+        result = self._model(inputs, training=False) # FILM call for interpolated frame
         return result['image'].numpy()
 
 def _recursive_generator(frame1, frame2, num_recursions, interpolator):
     """Recursively generate interpolated frames between two input frames."""
     if num_recursions == 0:
-        yield frame1
+        yield frame1 # exit condition
     else:
         time = np.full(shape=(1,), fill_value=0.5, dtype=np.float32)
         mid_frame = interpolator(
             np.expand_dims(frame1, axis=0), np.expand_dims(frame2, axis=0), time)[0]
-        yield from _recursive_generator(frame1, mid_frame, num_recursions - 1, interpolator) # left
-        yield from _recursive_generator(mid_frame, frame2, num_recursions - 1, interpolator) # right
+        yield from _recursive_generator(frame1, mid_frame, num_recursions - 1, interpolator) # 1st half
+        yield from _recursive_generator(mid_frame, frame2, num_recursions - 1, interpolator) # 2nd half
 
 def interpolate_recursively(frames, num_recursions, interpolator):
-    """Apply recursive interpolation to a list of frames."""
+    """Apply recursive interpolation to a list of input frames."""
     n = len(frames)
     for i in range(1, n):
         yield from _recursive_generator(frames[i - 1], frames[i], num_recursions, interpolator)
     yield frames[-1]
 
 def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
-    """Process keyframes to create an interpolated video."""
+    """Process keyframes to create an interpolated video, using functions above"""
     keyframes = sorted(glob(os.path.join(input_folder, '*.png')))
     frames = [preprocess_image(frame).numpy() for frame in keyframes]
     
     interpolator = Interpolator()
     interpolated_frames = list(interpolate_recursively(frames, num_recursions, interpolator))
     
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # For unique output..
     output_video = os.path.join(output_folder, f'output_video_{timestamp}.mp4')
     
     # Set up for fusing into a morphing video
@@ -91,12 +91,12 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     print(f'Video created with {len(interpolated_frames)} frames: {output_video}')
 
 # Usage
-input_folder = 'vangogh_pearlgirl'
-output_folder = 'FILM_Results'
+# input_folder = 'DIFFMORPHER KEYFRAMES HERE !'
+# output_folder = 'FILM_Results'
 
-start_time = time.time()
-process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
-end_time = time.time()
+# start_time = time.time()
+# process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
+# end_time = time.time()
 
-total_execution_time = end_time - start_time
-print(f'Total script execution time: {total_execution_time:.2f} seconds')
+# total_execution_time = end_time - start_time
+# print(f'Total script execution time: {total_execution_time:.2f} seconds')

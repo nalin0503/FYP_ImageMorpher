@@ -1,10 +1,32 @@
 # Image Morphing Project 
 NTU Final Year Project on Image Morphing via Consistency / Diffusion Models
 
+## Sample run command: 
+```bash
+python run_morphing.py \
+  --image_path_0 ./assets/Trump.jpg \
+  --prompt_0 "A photo of an American man" \
+  --image_path_1 ./assets/Biden.jpg \
+  --prompt_1 "A photo of an American man" \
+  --output_path ./results/Trump_Biden \
+  --use_adain \
+  --use_reschedule \
+  --save_inter \
+  --num_frames 16 \
+  --duration 100 \
+  --use_film \
+  --film_fps 30 \
+  --film_num_recursions 3
+```
+
+### Dev Notes
+
+
 Technical impl stuff:
 1) pytorch 2.0 for acceleration.... (explore, see email draft)
 2) text embedding interpolation.. slerp?  
 3) Test on diffmorpher eval dataset, test for smoothness basically, or image fidelity between new and old to measure quality (quantitative, use FID or sth)
+4) add google style PEP type-hinting 
 
 
 Some ideas: 
