@@ -19,14 +19,17 @@ python run_morphing.py \
   --film_num_recursions 3
 ```
 
-### Dev Notes
+---
+---
 
+### My Dev Notes (W.I.P.)
 
 Technical impl stuff:
 1) pytorch 2.0 for acceleration.... (explore, see email draft)
 2) text embedding interpolation.. slerp?  
-3) Test on diffmorpher eval dataset, test for smoothness basically, or image fidelity between new and old to measure quality (quantitative, use FID or sth)
+3) Test on diffmorpher eval dataset, test for smoothness basically, or image fidelity between new and old to measure quality (quantitative, use FID or sth) - see ipad for sched!! 
 4) add google style PEP type-hinting 
+5) add requirements.txt, or a poetry, or docker/conda image... FOR SETUP use makefile!! 
 
 
 Some ideas: 
