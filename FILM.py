@@ -20,7 +20,7 @@ def interpolate_frames(frame1, frame2, num_frames):
         inputs = {
             'x0': tf.expand_dims(frame1, 0),
             'x1': tf.expand_dims(frame2, 0),
-            'time': tf.constant([t], dtype=tf.float32)
+            'time': tf.reshape(tf.constant([t], dtype=tf.float32), (1, 1))  # Reshape to (1, 1)
         }
         output = model(inputs)
         frames.append(output['image'][0].numpy())
