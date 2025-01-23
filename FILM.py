@@ -56,6 +56,6 @@ def process_keyframes(input_folder, output_video, fps=30):
     out.release()
 
 # Usage
-input_folder = '/home/nalin/master/FYP/vangogh_pearlgirl'
+input_folder = 'vangogh_pearlgirl'
 output_video = 'output_video.mp4'
 process_keyframes(input_folder, output_video)
