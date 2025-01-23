@@ -1,0 +1,3 @@
+[submodule "DiffMorpher"]
+	path = DiffMorpher
+	url = https://github.com/Kevin-thu/DiffMorpher.git
