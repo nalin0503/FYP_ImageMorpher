@@ -26,10 +26,7 @@ morph:
 		--film_fps 30 \
 		--film_num_recursions 3
 
-# Clean output directories
-clean:
-	rm -rf $(OUTPUT_DIR)/*
-	rm -rf $(FILM_OUTPUT)/*
+### Add more options here later
 
 # Help message
 help:
@@ -37,5 +34,4 @@ help:
 	@echo "Available commands:"
 	@echo "  make           - Run the entire morphing pipeline"
 	@echo "  make morph     - Same as 'make'; generates morphing video with FILM"
-	@echo "  make clean     - Clean up all output directories"
 	@echo "  make help      - Show this help message"
