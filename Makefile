@@ -1,5 +1,3 @@
-# Rough Makefile (W.I.P.)
-
 # Variables
 PYTHON = python # or python3
 MAIN_SCRIPT = run_morphing.py
@@ -7,9 +5,15 @@ OUTPUT_DIR = ./results
 FILM_OUTPUT = ./FILM_Results
 
 # Default target: Run the entire morphing pipeline
-all: morph
+all: submodule morph
 
-# Run morphing pipeline with FILM, TODO - configure to be able to run make morph FRAMES=30 FILM=true
+# Ensure the DiffMorpher submodule is initialized and updated
+submodule:
+	@echo "Initializing and updating submodules..."
+	git submodule init
+	git submodule update
+
+# Run morphing pipeline with FILM, TODO - configure CLI run command to be able to run make morph FRAMES=30 FILM=true
 morph:
 	$(PYTHON) $(MAIN_SCRIPT) \
 		--image_path_0 ./assets/Trump.jpg \
@@ -32,6 +36,7 @@ morph:
 help:
 	@echo "Makefile for Image Morphing Project"
 	@echo "Available commands:"
-	@echo "  make           - Run the entire morphing pipeline"
-	@echo "  make morph     - Same as 'make'; generates morphing video with FILM"
+	@echo "  make           - Initialize submodules and run the entire morphing pipeline"
+	@echo "  make submodule - Initialize and update Git submodules"
+	@echo "  make morph     - Run the morphing pipeline with FILM"
 	@echo "  make help      - Show this help message"
