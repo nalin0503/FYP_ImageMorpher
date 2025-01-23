@@ -1,5 +1,5 @@
 # Image Morphing Project 
-NTU Final Year Project on Image Morphing via Consistency / Diffusion Models + FILM
+NTU Final Year Project on Image Morphing via Consistency / Diffusion Models enhanced by FILM.
 
 ## Sample run commands: 
 `run_morphing.py` is the overall orchestration script here. 
