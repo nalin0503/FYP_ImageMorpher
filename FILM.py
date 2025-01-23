@@ -35,8 +35,8 @@ model = hub.load('https://tfhub.dev/google/film/1')
 def preprocess_image(image_path):
     """Load and preprocess an image for the FILM model."""
     img = tf.io.read_file(image_path)
-    img = tf.image.decode_png(img, channels=3)
-    img = tf.image.convert_image_dtype(img, tf.float32)
+    img = tf.image.decode_png(img, channels=3) # remove alpha transparency
+    img = tf.image.convert_image_dtype(img, tf.float32) 
     return img
 
 class Interpolator:
@@ -59,8 +59,8 @@ def _recursive_generator(frame1, frame2, num_recursions, interpolator):
         time = np.full(shape=(1,), fill_value=0.5, dtype=np.float32)
         mid_frame = interpolator(
             np.expand_dims(frame1, axis=0), np.expand_dims(frame2, axis=0), time)[0]
-        yield from _recursive_generator(frame1, mid_frame, num_recursions - 1, interpolator)
-        yield from _recursive_generator(mid_frame, frame2, num_recursions - 1, interpolator)
+        yield from _recursive_generator(frame1, mid_frame, num_recursions - 1, interpolator) # left
+        yield from _recursive_generator(mid_frame, frame2, num_recursions - 1, interpolator) # right
 
 def interpolate_recursively(frames, num_recursions, interpolator):
     """Apply recursive interpolation to a list of frames."""
@@ -80,6 +80,7 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_video = os.path.join(output_folder, f'output_video_{timestamp}.mp4')
     
+    # Set up for fusing into a morphing video
     first_frame = cv2.imread(keyframes[0])
     height, width, _ = first_frame.shape
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -87,14 +88,14 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     
     for frame in interpolated_frames:
         frame_bgr = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
-        out.write(frame_bgr)
+        out.write(frame_bgr) # writes
     
     out.release()
     print(f'Video created with {len(interpolated_frames)} frames: {output_video}')
 
 # Usage
-input_folder = 'drive/MyDrive/FILM/frames'
-output_folder = 'drive/MyDrive/FILM'
+input_folder = 'vangogh_pearlgirl'
+output_folder = 'FILM_Results'
 
 start_time = time.time()
 process_keyframes(input_folder, output_folder, fps=30, num_recursions=4)
