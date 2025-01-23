@@ -16,10 +16,7 @@ Usage:
 Set the 'input_folder' to the directory containing your PNG keyframes
 Set the 'output_folder' to the desired location for the generated video
 Adjust 'fps' and 'num_recursions' parameters as needed
-
-Note: This script requires TensorFlow, TensorFlow Hub, OpenCV, and NumPy.
 """
-
 import os
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -98,7 +95,7 @@ input_folder = 'vangogh_pearlgirl'
 output_folder = 'FILM_Results'
 
 start_time = time.time()
-process_keyframes(input_folder, output_folder, fps=30, num_recursions=4)
+process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
 end_time = time.time()
 
 total_execution_time = end_time - start_time
