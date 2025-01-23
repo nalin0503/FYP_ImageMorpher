@@ -14,48 +14,56 @@ def preprocess_image(image_path):
     img = tf.image.convert_image_dtype(img, tf.float32)
     return img
 
-def interpolate_frames(frame1, frame2, num_frames):
-    frames = []
-    for t in np.linspace(0, 1, num_frames + 2)[1:-1]:
-        inputs = {
-            'x0': tf.expand_dims(frame1, 0),
-            'x1': tf.expand_dims(frame2, 0),
-            'time': tf.reshape(tf.constant([t], dtype=tf.float32), (1, 1))  # Reshape to (1, 1)
-        }
-        output = model(inputs)
-        frames.append(output['image'][0].numpy())
-    return frames
+class Interpolator:
+    def __init__(self, align=64):
+        self._model = model
+        self._align = align
 
-def process_keyframes(input_folder, output_video, fps=30):
+    def __call__(self, x0, x1, dt):
+        inputs = {'x0': x0, 'x1': x1, 'time': dt[..., np.newaxis]}
+        result = self._model(inputs, training=False)
+        return result['image'].numpy()
+
+def _recursive_generator(frame1, frame2, num_recursions, interpolator):
+    if num_recursions == 0:
+        yield frame1
+    else:
+        time = np.full(shape=(1,), fill_value=0.5, dtype=np.float32)
+        mid_frame = interpolator(
+            np.expand_dims(frame1, axis=0), np.expand_dims(frame2, axis=0), time)[0]
+        yield from _recursive_generator(frame1, mid_frame, num_recursions - 1, interpolator)
+        yield from _recursive_generator(mid_frame, frame2, num_recursions - 1, interpolator)
+
+def interpolate_recursively(frames, num_recursions, interpolator):
+    n = len(frames)
+    for i in range(1, n):
+        yield from _recursive_generator(frames[i - 1], frames[i], num_recursions, interpolator)
+    yield frames[-1]
+
+def process_keyframes(input_folder, output_video, fps=30, num_recursions=3):
     keyframes = sorted(glob(os.path.join(input_folder, '*.png')))
     
-    # Read the first frame to get dimensions
-    first_frame = cv2.imread(keyframes[0])
-    height, width, _ = first_frame.shape
+    # Read and preprocess keyframes
+    frames = [preprocess_image(frame).numpy() for frame in keyframes]
+    
+    interpolator = Interpolator()
+    interpolated_frames = list(interpolate_recursively(frames, num_recursions, interpolator))
     
     # Create video writer
+    first_frame = cv2.imread(keyframes[0])
+    height, width, _ = first_frame.shape
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_video, fourcc, fps, (width, height))
     
-    for i in range(len(keyframes) - 1):
-        frame1 = preprocess_image(keyframes[i])
-        frame2 = preprocess_image(keyframes[i + 1])
-        
-        # Interpolate between keyframes
-        interpolated_frames = interpolate_frames(frame1, frame2, fps // 2)
-        
-        # Write frames to video
-        for frame in interpolated_frames:   
-            frame_bgr = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
-            out.write(frame_bgr)
-    
-    # Write the last keyframe
-    last_frame = cv2.imread(keyframes[-1])
-    out.write(last_frame)
+    # Write frames to video
+    for frame in interpolated_frames:
+        frame_bgr = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
+        out.write(frame_bgr)
     
     out.release()
+    print(f'Video created with {len(interpolated_frames)} frames')
 
 # Usage
 input_folder = 'vangogh_pearlgirl'
 output_video = 'output_video.mp4'
-process_keyframes(input_folder, output_video)
+process_keyframes(input_folder, output_video, fps=30, num_recursions=3)
