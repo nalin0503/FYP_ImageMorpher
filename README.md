@@ -1,7 +1,8 @@
 # Image Morphing Project 
-NTU Final Year Project on Image Morphing via Consistency / Diffusion Models
+NTU Final Year Project on Image Morphing via Consistency / Diffusion Models + FILM
 
 ## Sample run command: 
+`run_morphing.py` is the overall orchestration script here. 
 ```bash
 python run_morphing.py \
   --image_path_0 ./assets/Trump.jpg \
