@@ -30,7 +30,7 @@ morph:
 		--film_fps 30 \
 		--film_num_recursions 3
 
-### Add more options here later
+### Add more options here later, make install, make init (install reqs)
 
 # Help message
 help:

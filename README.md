@@ -46,7 +46,7 @@ Some ideas:
 4) use auto image captioning for better initialisation of target images' prompts (can do manually too.. but to remove this req), 
 5) then generate intermediates using text prompt interpolation (below)
 6)  weighting the linear combi seems interesting (so weight the lora params and then addd... like an alpha for that (Check lcm-lora image morphing))
-7) Colour correction methods on the final morph video to make it seem smoother, higher fidelity.
+7) Colour correction methods on the final morph video to make it seem smoother, higher fidelity. 
 
 explore aidi instead of DDIM for inversion? no.
 
@@ -56,3 +56,4 @@ Later:
 - post on HF as a website (More like HF demo....)
 - need to make a seperate webapp for the functionality you want... (later, finished product, see FYP pres/report notes)
 - Back compute from number of frames (pre set, drop down) to the k - better usability for user
+
