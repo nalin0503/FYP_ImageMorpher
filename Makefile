@@ -13,7 +13,13 @@ submodule:
 	git submodule init
 	git submodule update
 
-# Run morphing pipeline with FILM, TODO - configure CLI run command to be able to run make morph FRAMES=30 FILM=true
+# Initialize environment by installing dependencies and (optionally) submodules
+init: submodule
+	@echo "Installing required Python packages..."
+	$(PYTHON) -m pip install -r requirements.txt
+
+# Run morphing pipeline with FILM
+# (TODO - configure CLI run command to be able to run make morph FRAMES=30 FILM=true)
 morph:
 	$(PYTHON) $(MAIN_SCRIPT) \
 		--image_path_0 ./assets/Trump.jpg \
@@ -37,6 +43,7 @@ help:
 	@echo "Makefile for Image Morphing Project"
 	@echo "Available commands:"
 	@echo "  make           - Initialize submodules and run the entire morphing pipeline"
+	@echo "  make init      - Install dependencies and set up the environment"
 	@echo "  make submodule - Initialize and update Git submodules"
 	@echo "  make morph     - Run the morphing pipeline with FILM"
 	@echo "  make help      - Show this help message"
