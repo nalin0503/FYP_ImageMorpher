@@ -8,7 +8,7 @@ from PIL import Image
 def save_uploaded_file(uploaded_file, dst_path):
     """Save an uploaded file (Streamlit) to a destination path on disk."""
     with open(dst_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
+        f.write(uploaded_file.getbuffer())  
 
 def main():
     st.title("DiffMorpher + LCM-LoRA + FILM Web App")
