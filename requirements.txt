@@ -1,9 +1,9 @@
-streamlit==1.22.0
+streamlit
 opencv-python
 Pillow
-torch==2.0.0
-transformers==4.28.0
-diffusers==0.17.0
+torch
+transformers
+diffusers
 accelerate
 einops
 safetensors

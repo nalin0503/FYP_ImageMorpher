@@ -37,6 +37,7 @@ Technical impl stuff:
 3) Test on diffmorpher eval dataset, test for smoothness basically, or image fidelity between new and old to measure quality (quantitative, use FID or sth) - see ipad for sched!! 
 4) add google style PEP type-hinting 
 5) add requirements.txt, or a poetry, or docker/conda image... FOR SETUP use makefile!! 
+6) do Presets for different settings (highest - LCM+ film + AdaIN , lowest - lcm Lora, no film) … **
 
 
 Some ideas: 
@@ -46,7 +47,8 @@ Some ideas:
 4) use auto image captioning for better initialisation of target images' prompts (can do manually too.. but to remove this req), 
 5) then generate intermediates using text prompt interpolation (below)
 6)  weighting the linear combi seems interesting (so weight the lora params and then addd... like an alpha for that (Check lcm-lora image morphing))
-7) Colour correction methods on the final morph video to make it seem smoother, higher fidelity. 
+7) Colour correction methods on the final morph video to make it seem smoother, higher fidelity.  
+    7.1) between keyframes based on colour, sharpness properties to make it seem smoother ? (Test)
 
 explore aidi instead of DDIM for inversion? no.
 
@@ -54,6 +56,7 @@ Later:
 - text embed interpolate 
 - And obv FILM (in progress)
 - post on HF as a website (More like HF demo....)
+- github.io summary page, (documentation page.)
 - need to make a seperate webapp for the functionality you want... (later, finished product, see FYP pres/report notes)
 - Back compute from number of frames (pre set, drop down) to the k - better usability for user
 
