@@ -8,7 +8,7 @@ from io import BytesIO
 import streamlit as st
 from PIL import Image
 
-# Set Streamlit page configuration
+# Set Streamlit page configuration (centered content via CSS)
 st.set_page_config(
     page_title="Metamorph: DiffMorpher + LCM-LoRA + FILM",
     layout="wide",
@@ -73,7 +73,7 @@ def main():
             50% { background-position: 100% 100%; }
             100% { background-position: 0% 0%; }
         }
-        /* Main container styling */
+        /* Main container styling: center content with max-width */
         .main .block-container {
             max-width: 900px;
             margin: 0 auto;
@@ -81,24 +81,32 @@ def main():
             background-color: transparent;
             color: #f1f1f1;
         }
-        /* Button styling */
+        /* Shiny premium purple Run button */
         div.stButton > button {
-            background-color: #4caf50;
-            color: #ffffff;
+            background-image: linear-gradient(45deg, #8e44ad, #732d91);
+            box-shadow: 0 0 10px rgba(142,68,173,0.6), 0 0 20px rgba(114,45,145,0.4);
             border: none;
+            color: #ffffff;
             padding: 0.6rem 1.2rem;
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Roboto', sans-serif;
-            transition: background-color 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         div.stButton > button:hover {
-            background-color: #45a049;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(142,68,173,0.8), 0 0 30px rgba(114,45,145,0.6);
         }
         /* File uploader label styling */
         .stFileUploader label {
             font-size: 1rem;
             color: #f1f1f1;
+        }
+        /* Styling for the right column in Advanced Options to add a vertical divider */
+        .right-column-divider {
+            border-left: 2px solid #f1f1f1;
+            padding-left: 1rem;
+            margin-left: 1rem;
         }
         </style>
         """,
@@ -127,7 +135,7 @@ def main():
         """
         <p style='text-align: center; font-size: 1.1rem;'>
             DiffMorpher is used for keyframe generation by default, with FILM for interpolation.
-            Optionally, enable LCM-LoRA for accelerated processing (with a slight quality trade-off).
+            Optionally, you can enable LCM-LoRA for accelerated inference (with slight decrease in quality).
             Upload two images, optionally provide textual prompts, and fine-tune the settings to create a smooth, high-quality morphing video.
         </p>
         <hr>
@@ -140,11 +148,11 @@ def main():
     col_imgA, col_imgB = st.columns(2)
     with col_imgA:
         st.markdown("#### Image A")
-        uploaded_image_A = st.file_uploader("Upload your first image (jpeg, png, etc.)", type=["png", "jpg", "jpeg"], key="imgA")
+        uploaded_image_A = st.file_uploader("Upload your first image", type=["png", "jpg", "jpeg"], key="imgA")
         prompt_A = st.text_input("Prompt for Image A (optional)", value="", key="promptA")
     with col_imgB:
         st.markdown("#### Image B")
-        uploaded_image_B = st.file_uploader("Upload your second image (jpeg, png, etc.)", type=["png", "jpg", "jpeg"], key="imgB")
+        uploaded_image_B = st.file_uploader("Upload your second image", type=["png", "jpg", "jpeg"], key="imgB")
         prompt_B = st.text_input("Prompt for Image B (optional)", value="", key="promptB")
 
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -153,29 +161,31 @@ def main():
     st.subheader("2. Configure Morphing Settings")
     st.markdown(
         """
-        By default, DiffMorpher is used for keyframe generation and FILM for interpolation.
-        Optionally, you can enable LCM-LoRA for accelerated processing.
+        The morphing process uses DiffMorpher (with optional LCM-LoRA) for keyframe generation and FILM for inter-frame interpolation.
+        Adjust the parameters in each section as needed.
         """,
         unsafe_allow_html=True
     )
-    # LCM-LoRA placeholder checkbox
-    use_lcm_lora = st.checkbox("Enable LCM-LoRA (accelerated processing with slight quality trade-off)", value=False)
-
-    # Advanced Options block (restored from earlier version)
     with st.expander("Advanced Options", expanded=True):
-        col_left, col_mid, col_right = st.columns(3)
+        # Two side-by-side columns: left for keyframe generator parameters, right for FILM parameters.
+        col_left, col_right = st.columns(2)
+        # Left Column: Keyframe Generator Parameters
         with col_left:
-            num_frames = st.number_input("Number of keyframes (2–200)", min_value=2, max_value=200, value=16)
-            film_interpolation = st.checkbox("Use FILM interpolation", value=True)
-            do_lora = st.checkbox("Disable LoRA usage? [--no_lora]", value=False)
-        with col_mid:
-            fps = st.number_input("FPS of final video (1–120)", min_value=1, max_value=120, value=40)
-            film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=3)
-            fix_lora_val = st.text_input("Fix LoRA alpha (optional, e.g. '0.7')", value="")
+            st.markdown("##### Keyframe Generator Parameters")
+            num_frames = st.number_input("Number of keyframes (2–200)", min_value=2, max_value=200, value=20)
+            enable_lcm_lora = st.checkbox("Enable LCM-LoRA (accelerated inference, slight decrease in quality)", value=False)
+            use_adain = st.checkbox("Use AdaIN", value=True)
+            use_reschedule = st.checkbox("Use reschedule sampling", value=True)
+            keyframe_duration = st.number_input("Keyframe Duration (seconds, only if not using FILM)", min_value=0.01, max_value=5.0, value=0.1, step=0.01)
+        # Right Column: Inter-frame Interpolator Parameters (FILM)
         with col_right:
-            use_adain = st.checkbox("Use AdaIN? [--use_adain]", value=False)
-            use_reschedule = st.checkbox("Use reschedule sampling? [--use_reschedule]", value=False)
-            save_inter = st.checkbox("Save intermediate frames? [--save_inter]", value=False)
+            # Wrap the content in a div with a left border to demarcate the section.
+            st.markdown("<div class='right-column-divider'>", unsafe_allow_html=True)
+            st.markdown("##### Inter-frame Interpolator Parameters")
+            use_film = st.checkbox("Use FILM interpolation", value=True)
+            film_fps = st.number_input("FILM FPS (1–120)", min_value=1, max_value=120, value=30)
+            film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=3)
+            st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -198,6 +208,7 @@ def main():
             os.makedirs(output_dir, exist_ok=True)
             os.makedirs(film_output_dir, exist_ok=True)
 
+            # Build the CLI command
             cmd = [
                 sys.executable, "run_morphing.py",
                 "--image_path_0", imgA_path,
@@ -206,21 +217,19 @@ def main():
                 "--prompt_1", prompt_B,
                 "--output_path", output_dir,
                 "--film_output_folder", film_output_dir,
+                "--num_frames", str(num_frames),
+                "--keyframe_duration", str(keyframe_duration)
             ]
-            if use_lcm_lora:
+            if enable_lcm_lora:
                 cmd.append("--use_lcm_lora")
-            if film_interpolation:
-                cmd.append("--use_film")
-            if do_lora:
-                cmd.append("--no_lora")
-            if fix_lora_val.strip():
-                cmd.extend(["--fix_lora_value", fix_lora_val.strip()])
             if use_adain:
                 cmd.append("--use_adain")
             if use_reschedule:
                 cmd.append("--use_reschedule")
-            if save_inter:
-                cmd.append("--save_inter")
+            if use_film:
+                cmd.append("--use_film")
+            cmd.extend(["--film_fps", str(film_fps)])
+            cmd.extend(["--film_num_recursions", str(film_recursions)])
 
             st.info("Initializing pipeline. Please wait...")
             with st.spinner("Generating morph..."):

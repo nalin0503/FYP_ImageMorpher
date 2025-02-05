@@ -59,4 +59,6 @@ Later:
 - github.io summary page, (documentation page.)
 - need to make a seperate webapp for the functionality you want... (later, finished product, see FYP pres/report notes)
 - Back compute from number of frames (pre set, drop down) to the k - better usability for user
-5. For more details on settings and parameters, see this github.io page:
+5. "For more details on settings and parameters, see this github.io page:"
+
+6. Setup logging for testing, test on chincha computer. Log files saved for each config. record down. 
