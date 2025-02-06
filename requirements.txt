@@ -13,3 +13,4 @@ transformers
 torch
 torchvision
 lpips
+peft
