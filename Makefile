@@ -11,7 +11,9 @@ all: submodule morph
 submodule:
 	@echo "Initializing and updating submodules..."
 	git submodule init
-	git submodule update
+	git submodule sync
+	git submodule update --remote
+	
 
 # Initialize environment by installing dependencies and (optionally) submodules
 init: submodule
