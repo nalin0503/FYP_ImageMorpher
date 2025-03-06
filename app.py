@@ -1,3 +1,6 @@
+"""
+Cleaned up version, Close-to-Final UI features and functionality logic. 
+"""
 import os
 import sys
 import subprocess
