@@ -114,7 +114,7 @@ def main():
     )
 
     # ---------------- HEADER & LOGO ----------------
-    logo_path = os.path.join("lcm-lora", "metamorphLogo_nobg.png")
+    logo_path = "metamorphLogo_nobg.png"
     if os.path.exists(logo_path):
         try:
             logo = Image.open(logo_path)
