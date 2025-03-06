@@ -221,7 +221,7 @@ def main():
                 "--keyframe_duration", str(keyframe_duration)
             ]
             if enable_lcm_lora:
-                cmd.append("--use_lcm_lora")
+                cmd.append("--use_lcm")
             if use_adain:
                 cmd.append("--use_adain")
             if use_reschedule:
@@ -234,7 +234,7 @@ def main():
             st.info("Initializing pipeline. Please wait...")
             with st.spinner("Generating morph..."):
                 try:
-                    subprocess.run(cmd, check=True)
+                    subprocess.run(cmd, check=True) # Run the built CLI command
                 except subprocess.CalledProcessError as e:
                     st.error(f"Error running pipeline: {e}")
                     return
