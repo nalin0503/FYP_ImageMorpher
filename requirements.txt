@@ -13,4 +13,4 @@ transformers==4.34.1
 torch
 torchvision
 lpips
-peft
+# peft
