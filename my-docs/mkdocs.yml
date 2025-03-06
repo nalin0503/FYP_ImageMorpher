@@ -1,0 +1,7 @@
+site_name: My Image Morpher Tool
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Parameters: parameters.md
+  - Usage: usage.md
