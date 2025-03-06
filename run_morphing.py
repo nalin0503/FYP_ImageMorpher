@@ -17,10 +17,14 @@ def parse_arguments():
     #     choices=["diffmorpher", "lcm_lora", "diffmorpher_lcm"],
     #     help="Choose which method to use for keyframe generation."
     # )
+    # i think this would be to select the models. so theres
+    # stable diffusion 2-1 (without lcm)
+    # stable diffusion 1-5 (has lcm support)
+    # dreamshaper 7, fine-tuned 1-5, more glam, (has lcm support)
 
     # ------------------- DIFFMORPHER ARGS -------------------
     parser.add_argument(
-        "--model_path", type=str, default="stabilityai/stable-diffusion-2-1-base",
+        "--model_path", type=str, default="stabilityai/stable-diffusion-2-1-base", # yeah this needs to be chnaged TODO
         help="Pretrained model to use for DiffMorpher (default: %(default)s)"
     )
     parser.add_argument(
@@ -159,13 +163,9 @@ def run_diffmorpher(args):
 def run_lcm_lora(args): 
     """
     Run the LCM-LoRA accelerated Keyframe generator
-    """
-    pass
 
-def run_latent_consistency_morpher(args):
     """
-    Run the Latent Consistency Model based Keyframe generator   
-    """
+    # THIS would be a flag passed to diffmorpher instead.
     pass
 
 
