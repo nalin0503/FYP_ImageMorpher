@@ -1,4 +1,5 @@
 site_name: My Image Morpher Tool
+site_url: https://nalin0503.github.io/FYP_ImageMorpher/
 theme:
   name: material
 nav:
