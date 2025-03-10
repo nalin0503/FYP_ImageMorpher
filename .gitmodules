@@ -1,4 +1,4 @@
 [submodule "DiffMorpher"]
 	path = DiffMorpher
 	url = https://github.com/nalin0503/Image-Morpher.git
-	branch = my-changes
+	branch = main
