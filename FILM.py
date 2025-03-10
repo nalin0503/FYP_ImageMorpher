@@ -91,7 +91,7 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     print(f'Video created with {len(interpolated_frames)} frames: {output_video}')
 
 # Usage
-# input_folder = 'DIFFMORPHER KEYFRAMES HERE !'
+# input_folder = 'sample_keyframes'
 # output_folder = 'FILM_Results'
 
 # start_time = time.time()

@@ -1,6 +1,9 @@
 # Image Morphing Project 
 NTU Final Year Project on Image Morphing via Consistency / Diffusion Models enhanced by FILM.
 
+### might be needed
+# conda install -c conda-forge cudatoolkit=11.8.0 cudnn=9.3.0
+
 ## Sample run commands: 
 `run_morphing.py` is the overall orchestration script here. 
 
