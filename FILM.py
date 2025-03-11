@@ -27,7 +27,8 @@ from datetime import datetime
 import time
 
 # Load the FILM model
-model = hub.load('https://tfhub.dev/google/film/1')
+model = hub.load('/mnt/slurm_home/nalin/.cache/kagglehub/models/google/film/tensorFlow2/film/1')
+# model = hub.load('/mnt/slurm_home/zqxiao/.cache/kagglehub/models/google/film/tensorFlow2/film/1')
 
 def preprocess_image(image_path):
     """Load and preprocess an image for the FILM model."""
@@ -91,12 +92,12 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     print(f'Video created with {len(interpolated_frames)} frames: {output_video}')
 
 # Usage
-# input_folder = 'sample_keyframes'
-# output_folder = 'FILM_Results'
+input_folder = 'sample_keyframes'
+output_folder = '/mnt/slurm_home/nalin/FYP_ImageMorpher/FILM_Results'
 
-# start_time = time.time()
-# process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
-# end_time = time.time()
+start_time = time.time()
+process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
+end_time = time.time()
 
-# total_execution_time = end_time - start_time
-# print(f'Total script execution time: {total_execution_time:.2f} seconds')
+total_execution_time = end_time - start_time
+print(f'Total script execution time: {total_execution_time:.2f} seconds')
