@@ -1,5 +1,3 @@
-# T.B.C.
-
 import os
 import sys
 import time
@@ -8,25 +6,16 @@ import argparse
 
 from FILM import process_keyframes
 
+import multiprocessing as mp
+mp.set_start_method("spawn", force=True) # see if buggy
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Orchestrate DiffMorpher || LCM-LoRa || LCM, and FILM for smooth morphing between two images.")
-    
-    # ------------------- KEYFRAME METHOD SELECTION -------------------
-    # TODO multiple methods not supported yet
-    # parser.add_argument(
-    #     "--keyframe_method", type=str, default="diffmorpher",
-    #     choices=["diffmorpher", "lcm_lora", "diffmorpher_lcm"],
-    #     help="Choose which method to use for keyframe generation."
-    # )
-    # i think this would be to select the models. so theres
-    # stable diffusion 2-1 (without lcm)
-    # stable diffusion 1-5 (has lcm support)
-    # dreamshaper 7, fine-tuned 1-5, more glam, (has lcm support)
 
     # ------------------- DIFFMORPHER ARGS -------------------
     parser.add_argument(
-        "--model_path", type=str, default="stabilityai/stable-diffusion-2-1-base", # yeah this needs to be chnaged TODO
+        "--model_path", type=str, default="stabilityai/stable-diffusion-2-1-base",
         help="Pretrained model to use for DiffMorpher (default: %(default)s)"
     )
     parser.add_argument(
@@ -93,6 +82,10 @@ def parse_arguments():
         "--no_lora", action="store_true",
         help="Disable LoRA usage in DiffMorpher"
     )
+    parser.add_argument(
+        "--use_lcm", action="store_true",
+        help="Enable LCM-LoRA acceleration for faster sampling"
+    )
 
     # ------------------- FILM ARGS -------------------
     parser.add_argument(
@@ -149,10 +142,13 @@ def run_diffmorpher(args):
         cmd.append("--use_reschedule")
     if args.fix_lora_value is not None:
         cmd += ["--fix_lora_value", str(args.fix_lora_value)]
-    if args.save_inter:
-        cmd.append("--save_inter")
     if args.no_lora:
         cmd.append("--no_lora")
+    # ---- Always add --save_inter to ensure keyframes are saved ----
+    cmd.append("--save_inter")
+    # ---- Add LCM-LoRA flag if set ----
+    if args.use_lcm:
+        cmd.append("--use_lcm")
 
     print("[INFO] Running DiffMorpher with command:")
     print(" ".join(cmd))
@@ -162,15 +158,6 @@ def run_diffmorpher(args):
     end = time.time()
     print(f"[INFO] DiffMorpher completed in {end - start:.2f} seconds.")
 
-def run_lcm_lora(args): 
-    """
-    Run the LCM-LoRA accelerated Keyframe generator
-
-    """
-    # THIS would be a flag passed to diffmorpher instead.
-    pass
-
-
 def create_simple_video_from_keyframes(keyframes_folder, output_folder, fps=40):
     """
     If the user does NOT want FILM, we still make a basic video from keyframes.
@@ -178,7 +165,6 @@ def create_simple_video_from_keyframes(keyframes_folder, output_folder, fps=40):
     """
     import cv2
     from glob import glob
-    import os
     from datetime import datetime
     
     os.makedirs(output_folder, exist_ok=True)
@@ -219,7 +205,6 @@ def main():
     # 3) If user wants to use FILM, perform high-quality interpolation on the keyframes
     if args.use_film:
         print("[INFO] Running FILM to enhance the keyframes...")
-
         start_film_time = time.time()
         # from FILM.py:
         process_keyframes(
@@ -230,7 +215,6 @@ def main():
         )
         end_film_time = time.time()
         print(f"[INFO] FILM interpolation completed in {end_film_time - start_film_time:.2f} seconds.")
-
     else:
         # 4) If user does NOT want FILM, create a simple .mp4 from the keyframes
         print("[INFO] Skipping FILM interpolation. Creating a basic video from DiffMorpher keyframes...")
