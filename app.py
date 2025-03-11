@@ -238,20 +238,13 @@ def main():
         # Left Column: Keyframe Generator Parameters
         with col_left:
             st.markdown("##### Keyframe Generator Parameters")
-            num_frames = st.number_input("Number of keyframes (2–200)", min_value=2, max_value=200, value=20)
-            if model_option == "Base Stable Diffusion V2-1 (No LCM-LoRA support)":
-                enable_lcm_lora = st.checkbox(
-                    "Enable LCM-LoRA (accelerated inference, slight decrease in quality)",
-                    value=False,
-                    disabled=True,
-                    help="LCM-LoRA is not available for the selected model card."
-                )
-            else:
-                lcm_default = preset_lcm if preset_lcm is not None else False
-                enable_lcm_lora = st.checkbox(
-                    "Enable LCM-LoRA (accelerated inference, slight decrease in quality)",
-                    value=lcm_default
-                )
+            num_frames = st.number_input("Number of keyframes (2–50)", min_value=2, max_value=50, value=16)
+            # Removed disabling for SD V2-1 so that LCM-LoRA can be enabled for it as well.
+            lcm_default = preset_lcm if preset_lcm is not None else False
+            enable_lcm_lora = st.checkbox(
+                "Enable LCM-LoRA (accelerated inference, slight decrease in quality)",
+                value=lcm_default
+            )
             use_adain = st.checkbox("Use AdaIN", value=True)
             use_reschedule = st.checkbox("Use reschedule sampling", value=True)
             keyframe_duration = st.number_input("Keyframe Duration (seconds, only if not using FILM)", min_value=0.01, max_value=5.0, value=0.1, step=0.01)
@@ -275,21 +268,42 @@ def main():
             st.error("Please upload both images before running the morphing pipeline.")
             return
 
+        # Check that the pipeline script exists
+        if not os.path.exists("run_morphing.py"):
+            st.error("Pipeline script 'run_morphing.py' not found in the current directory.")
+            return
+
         with tempfile.TemporaryDirectory() as temp_dir:
-            imgA_path = os.path.join(temp_dir, "imageA.png")
-            imgB_path = os.path.join(temp_dir, "imageB.png")
-            save_uploaded_file(uploaded_image_A, imgA_path)
-            save_uploaded_file(uploaded_image_B, imgB_path)
+            try:
+                imgA_path = os.path.join(temp_dir, "imageA.png")
+                imgB_path = os.path.join(temp_dir, "imageB.png")
+                save_uploaded_file(uploaded_image_A, imgA_path)
+                save_uploaded_file(uploaded_image_B, imgB_path)
+            except Exception as e:
+                st.error(f"Error saving uploaded images: {e}")
+                return
 
             output_dir = os.path.join(temp_dir, "morph_results")
             film_output_dir = os.path.join(temp_dir, "film_output")
             os.makedirs(output_dir, exist_ok=True)
             os.makedirs(film_output_dir, exist_ok=True)
 
-            # Build the CLI command. Note: numeric parameters are converted to strings for CLI compatibility.
+            # Convert seconds to milliseconds
+            duration_ms = int(keyframe_duration * 1000)
+
+            # Build the CLI command
+            # Here you can add a mapping if you want to convert display names to actual model identifiers.
+            # For this example, we assume model_option is already a valid model identifier,
+            # or use a conditional similar to before.
+            actual_model_path = (
+                "lykon/dreamshaper-7" if model_option == "Dreamshaper-7 (fine-tuned SD V1-5)" 
+                else "sd-legacy/stable-diffusion-v1-5" if model_option == "Base Stable Diffusion V1-5" 
+                else "stabilityai/stable-diffusion-2-1-base"
+            )
+
             cmd = [
                 sys.executable, "run_morphing.py",
-                "--model_path", model_option if model_option != "Dreamshaper-7 (fine-tuned SD V1-5)" else "lykon/dreamshaper-7",
+                "--model_path", actual_model_path,
                 "--image_path_0", imgA_path,
                 "--image_path_1", imgB_path,
                 "--prompt_0", prompt_A,
@@ -297,7 +311,7 @@ def main():
                 "--output_path", output_dir,
                 "--film_output_folder", film_output_dir,
                 "--num_frames", str(num_frames),
-                "--keyframe_duration", str(keyframe_duration)
+                "--duration", str(duration_ms)
             ]
             if enable_lcm_lora:
                 cmd.append("--use_lcm")
@@ -318,6 +332,7 @@ def main():
                     st.error(f"Error running pipeline: {e}")
                     return
 
+            # Check for output file in FILM folder first; if not, then in output_dir
             possible_outputs = [f for f in os.listdir(film_output_dir) if f.endswith(".mp4")]
             if not possible_outputs:
                 possible_outputs = [f for f in os.listdir(output_dir) if f.endswith(".mp4")]
@@ -329,13 +344,16 @@ def main():
                 )
                 st.success("Morphing complete! 🎉")
                 st.video(final_video_path)
-                with open(final_video_path, "rb") as f:
-                    st.download_button(
-                        "Download Result Video",
-                        data=f.read(),
-                        file_name="morph_result.mp4",
-                        mime="video/mp4"
-                    )
+                try:
+                    with open(final_video_path, "rb") as f:
+                        st.download_button(
+                            "Download Result Video",
+                            data=f.read(),
+                            file_name="morph_result.mp4",
+                            mime="video/mp4"
+                        )
+                except Exception as e:
+                    st.error(f"Error reading output video: {e}")
             else:
                 st.warning("No .mp4 output found. Check logs for details.")
 
