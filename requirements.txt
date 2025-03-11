@@ -16,4 +16,4 @@ lpips
 # peft
 tensorflow==2.18.0
 tensorflow_hub==0.16.1
-
+opencv_python
