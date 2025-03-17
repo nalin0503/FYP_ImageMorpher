@@ -214,27 +214,26 @@ def main():
         preset_film = True
         preset_lcm = False
     elif preset_option.startswith("Medium quality"):
-        # "Medium quality, medium inference time ⚖️"
+        # "Medium quality, medium inference time"
         preset_model = "Base Stable Diffusion V2-1"
         preset_film = False
         preset_lcm = False
     elif preset_option.startswith("Low quality"):
-        # "Low quality, lowest inference time ⚡"
+        # "Low quality, lowest inference time"
         preset_model = "Base Stable Diffusion V1-5"
         preset_film = False
         preset_lcm = True
     elif preset_option.startswith("Creative morph"):
-        # "Creative morph 🎨"
+        # "Creative morph"
         preset_model = "Dreamshaper-7 (fine-tuned SD V1-5)"
         preset_film = True
         preset_lcm = True
     else:
-        # "Custom ⚙️"
+        # "Custom"
         preset_model = None
         preset_film = None
         preset_lcm = None
 
-    # Auto-expand advanced options if "Custom ⚙️" is chosen
     advanced_expanded = True if preset_option.endswith("⚙️") else False
 
     # Advanced Options for fine-tuning
@@ -282,7 +281,10 @@ def main():
     # ---------------- SECTION 3: EXECUTE MORPH PIPELINE ----------------
     st.subheader("3. Generate Morphing Video")
     st.markdown("Once satisfied with your inputs, click below to start the process.")
-    
+
+    # New checkbox for SLAB execution toggle
+    using_slab = st.checkbox("Using SLAB ssh?", value=False, help="If enabled, the pipeline command will be prefixed with SLAB cluster execution parameters.")
+
     if st.button("Run Morphing Pipeline", key="run_pipeline"):
         # Validate inputs
         if not (uploaded_image_A and uploaded_image_B):
@@ -342,7 +344,14 @@ def main():
                 cmd.extend(["--film_fps", str(film_fps)])
                 cmd.extend(["--film_num_recursions", str(film_recursions)])
                 
-                # Run the pipeline
+                # If SLAB execution is enabled, prepend the srun command prefix.
+                if using_slab:
+                    slab_prefix = [
+                        "srun", "-p", "rtx3090_slab", "-w", "slabgpu05", "--gres=gpu:1",
+                        "--job-name=test", "--kill-on-bad-exit=1"
+                    ]
+                    cmd = slab_prefix + cmd
+                
                 st.info("Initializing pipeline. This may take a few minutes...")
                 progress_bar = st.progress(0)
                 status_text = st.empty()
@@ -366,15 +375,11 @@ def main():
                 
                 # Check for output video
                 video_found = False
+                possible_outputs = [f for f in os.listdir(film_output_dir) if f.endswith(".mp4")]
+                if possible_outputs:
+                    final_video_path = os.path.join(film_output_dir, possible_outputs[0])
+                    video_found = True
                 
-                # First check FILM output directory if FILM was used
-                if use_film:
-                    possible_outputs = [f for f in os.listdir(film_output_dir) if f.endswith(".mp4")]
-                    if possible_outputs:
-                        final_video_path = os.path.join(film_output_dir, possible_outputs[0])
-                        video_found = True
-                
-                # If not found in FILM dir, check regular output dir
                 if not video_found:
                     possible_outputs = [f for f in os.listdir(output_dir) if f.endswith(".mp4")]
                     if possible_outputs:
