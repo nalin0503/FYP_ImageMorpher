@@ -210,12 +210,12 @@ def main():
     # Determine preset defaults based on selection
     if preset_option.startswith("Maximum quality"):
         # "Maximum quality, highest inference time 🏆"
-        preset_model = "Base Stable Diffusion V2-1 (No LCM-LoRA support)"
+        preset_model = "Base Stable Diffusion V2-1"
         preset_film = True
         preset_lcm = False
     elif preset_option.startswith("Medium quality"):
         # "Medium quality, medium inference time ⚖️"
-        preset_model = "Base Stable Diffusion V2-1 (No LCM-LoRA support)"
+        preset_model = "Base Stable Diffusion V2-1"
         preset_film = False
         preset_lcm = False
     elif preset_option.startswith("Low quality"):
@@ -242,7 +242,7 @@ def main():
         options_list = [
             "Base Stable Diffusion V1-5",
             "Dreamshaper-7 (fine-tuned SD V1-5)",
-            "Base Stable Diffusion V2-1 (No LCM-LoRA support)"
+            "Base Stable Diffusion V2-1"
         ]
         default_model = preset_model if preset_model is not None else "Base Stable Diffusion V1-5"
         default_index = options_list.index(default_model)
@@ -255,14 +255,11 @@ def main():
             num_frames = st.number_input("Number of keyframes (2–50)", min_value=2, max_value=50, value=16)
             # Note: LCM compatibility check updated
             lcm_default = preset_lcm if preset_lcm is not None else False
-            lcm_disabled = model_option == "Base Stable Diffusion V2-1 (No LCM-LoRA support)"
-            lcm_help = "LCM-LoRA is not compatible with SD V2-1" if lcm_disabled else "Accelerates inference with slight quality decrease"
-            
+    
             enable_lcm_lora = st.checkbox(
                 "Enable LCM-LoRA",
-                value=False if lcm_disabled else lcm_default,
-                disabled=lcm_disabled,
-                help=lcm_help
+                value=lcm_default,
+                help="Accelerates inference with slight quality decrease"
             )
             
             use_adain = st.checkbox("Use AdaIN", value=True, help="Adaptive Instance Normalization for improved generation")
@@ -313,13 +310,9 @@ def main():
                 # Map UI model names to actual model paths
                 actual_model_path = (
                     "lykon/dreamshaper-7" if model_option == "Dreamshaper-7 (fine-tuned SD V1-5)" 
-                    else "stabilityai/stable-diffusion-2-1-base" if model_option == "Base Stable Diffusion V2-1 (No LCM-LoRA support)"
+                    else "stabilityai/stable-diffusion-2-1-base" if model_option == "Base Stable Diffusion V2-1"
                     else "sd-legacy/stable-diffusion-v1-5"  # Default to SD V1-5
                 )
-
-                # Disable LCM-LoRA for SD V2-1 as it's not supported
-                if model_option == "Base Stable Diffusion V2-1 (No LCM-LoRA support)":
-                    enable_lcm_lora = False
                 
                 # Build the command for run_morphing.py
                 cmd = [
