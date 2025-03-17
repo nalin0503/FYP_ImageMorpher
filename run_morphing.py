@@ -3,10 +3,9 @@ import sys
 import time
 import subprocess
 import argparse
-
-from FILM import process_keyframes
-
 import multiprocessing as mp
+
+# Don't import FILM module globally - we'll import the specific function when needed
 mp.set_start_method("spawn", force=True) # see if buggy
 
 def parse_arguments():
@@ -98,10 +97,10 @@ def parse_arguments():
     )
     parser.add_argument(
         "--film_output_folder", type=str, default="./FILM_Results",
-        help="Folder where FILM’s final interpolated video is saved (default: %(default)s)"
+        help="Folder where FILM's final interpolated video is saved (default: %(default)s)"
     )
     parser.add_argument(
-        "--film_fps", type=int, default=40,
+        "--film_fps", type=int, default=30,
         help="FPS for the final video - 'Pseudo-Playback-Speed', since total frames are same (default: %(default)s)"
     )
     parser.add_argument(
@@ -191,6 +190,22 @@ def create_simple_video_from_keyframes(keyframes_folder, output_folder, fps=40):
     out.release()
     print(f"[INFO] Basic morphing video saved at: {out_video_path}")
 
+def run_film_interpolation(input_folder, output_folder, fps, num_recursions):
+    """
+    Import and run FILM processing only when needed.
+    This function is called only if args.use_film is True.
+    """
+    # Import the process_keyframes function from FILM.py only when needed
+    from FILM import process_keyframes
+    
+    # Now run the FILM processing
+    return process_keyframes(
+        input_folder=input_folder,
+        output_folder=output_folder,
+        fps=fps,
+        num_recursions=num_recursions
+    )
+
 def main():
     args = parse_arguments()
     overall_start_time = time.time()
@@ -199,22 +214,27 @@ def main():
     run_diffmorpher(args)
 
     # 2) Determine the folder containing the keyframes
-    # If user didn’t explicitly give `--film_input_folder`, use `args.output_path`
+    # If user didn't explicitly give `--film_input_folder`, use `args.output_path`
     keyframes_folder = args.film_input_folder if args.film_input_folder else args.output_path
 
     # 3) If user wants to use FILM, perform high-quality interpolation on the keyframes
     if args.use_film:
         print("[INFO] Running FILM to enhance the keyframes...")
         start_film_time = time.time()
-        # from FILM.py:
-        process_keyframes(
+        
+        # Call the wrapper function that imports FILM only when needed
+        success = run_film_interpolation(
             input_folder=keyframes_folder,
             output_folder=args.film_output_folder,
             fps=args.film_fps,
             num_recursions=args.film_num_recursions
         )
+        
         end_film_time = time.time()
-        print(f"[INFO] FILM interpolation completed in {end_film_time - start_film_time:.2f} seconds.")
+        if success:
+            print(f"[INFO] FILM interpolation completed in {end_film_time - start_film_time:.2f} seconds.")
+        else:
+            print("[ERROR] FILM interpolation failed. See above for details.")
     else:
         # 4) If user does NOT want FILM, create a simple .mp4 from the keyframes
         print("[INFO] Skipping FILM interpolation. Creating a basic video from DiffMorpher keyframes...")

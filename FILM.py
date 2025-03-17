@@ -19,15 +19,20 @@ Adjust 'fps' and 'num_recursions' parameters as needed
 """
 import os
 import tensorflow as tf
-import tensorflow_hub as hub
 import cv2
 import numpy as np
 from glob import glob
 from datetime import datetime
 import time
+import sys
 
-# Load the FILM model
-model = hub.load('/mnt/slurm_home/nalin/.cache/kagglehub/models/google/film/tensorFlow2/film/1')
+def load_film_model():
+    """Loads the FILM model only when called explicitly."""
+    print("Loading FILM model...")
+    import tensorflow_hub as hub
+    model = hub.load('/mnt/slurm_home/nalin/.cache/kagglehub/models/google/film/tensorFlow2/film/1')
+    print("FILM model loaded successfully.")
+    return model
 
 def preprocess_image(image_path):
     """Load and preprocess an image for the FILM model."""
@@ -38,7 +43,7 @@ def preprocess_image(image_path):
 
 class Interpolator:
     """Wrapper class for the FILM model to perform frame interpolation."""
-    def __init__(self, align=64):
+    def __init__(self, model, align=64):
         self._model = model
         self._align = align
 
@@ -68,10 +73,28 @@ def interpolate_recursively(frames, num_recursions, interpolator):
 
 def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     """Process keyframes to create an interpolated video, using functions above"""
+    # Check if input folder exists
+    if not os.path.exists(input_folder):
+        print(f"Error: Input folder '{input_folder}' does not exist.")
+        return False
+    
+    # Check if input folder contains PNG files
     keyframes = sorted(glob(os.path.join(input_folder, '*.png')))
+    if not keyframes:
+        print(f"Error: No PNG files found in '{input_folder}'.")
+        return False
+        
+    # Create output folder if it doesn't exist
+    if not os.path.exists(output_folder):
+        print(f"Creating output folder: '{output_folder}'")
+        os.makedirs(output_folder)
+    
+    # Only load the FILM model when needed
+    model = load_film_model()
+    
     frames = [preprocess_image(frame).numpy() for frame in keyframes]
     
-    interpolator = Interpolator()
+    interpolator = Interpolator(model)
     interpolated_frames = list(interpolate_recursively(frames, num_recursions, interpolator))
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # For unique output..
@@ -89,14 +112,25 @@ def process_keyframes(input_folder, output_folder, fps=30, num_recursions=3):
     
     out.release()
     print(f'Video created with {len(interpolated_frames)} frames: {output_video}')
+    return True
 
-# # Usage
-# input_folder = 'sample_keyframes'
-# output_folder = '/mnt/slurm_home/nalin/FYP_ImageMorpher/FILM_Results'
-
-# start_time = time.time()
-# process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
-# end_time = time.time()
-
-# total_execution_time = end_time - start_time
-# print(f'Total script execution time: {total_execution_time:.2f} seconds')
+# Main execution
+if __name__ == "__main__":
+    # Usage
+    input_folder = 'results/Trump_Biden_New'
+    output_folder = 'FILM_Results'
+    
+    print(f"Starting FILM video interpolation process...")
+    print(f"Input folder: {input_folder}")
+    print(f"Output folder: {output_folder}")
+    
+    start_time = time.time()
+    success = process_keyframes(input_folder, output_folder, fps=30, num_recursions=3)
+    end_time = time.time()
+    
+    if success:
+        total_execution_time = end_time - start_time
+        print(f'Total script execution time: {total_execution_time:.2f} seconds')
+    else:
+        print("Interpolation process failed. Please check the error messages above.")
+        sys.exit(1)
