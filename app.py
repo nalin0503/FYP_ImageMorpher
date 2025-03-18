@@ -179,13 +179,15 @@ def main():
         uploaded_image_A = st.file_uploader("Upload your first image", type=["png", "jpg", "jpeg"], key="imgA")
         if uploaded_image_A is not None:
             st.image(uploaded_image_A, caption="Preview - Image A", use_container_width=True)
-        prompt_A = st.text_input("Prompt for Image A (optional)", value="", key="promptA")
+        prompt_A = st.text_input("Short Description for Image A (optional)", value="", key="promptA", 
+        help="For added interpolation between the two descriptions")
     with col_imgB:
         st.markdown("#### Image B")
         uploaded_image_B = st.file_uploader("Upload your second image", type=["png", "jpg", "jpeg"], key="imgB")
         if uploaded_image_B is not None:
             st.image(uploaded_image_B, caption="Preview - Image B", use_container_width=True)
-        prompt_B = st.text_input("Prompt for Image B (optional)", value="", key="promptB")
+        prompt_B = st.text_input("Short Description for Image B (optional)", value="", key="promptB",
+        help="For added interpolation between the two descriptions")
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
