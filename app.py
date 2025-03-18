@@ -265,7 +265,6 @@ def main():
             )
             use_adain = st.checkbox("Use AdaIN", value=True, help="Adaptive Instance Normalization for improved generation")
             use_reschedule = st.checkbox("Use reschedule sampling", value=True, help="Better sampling strategy")
-            keyframe_duration = st.number_input("Keyframe Duration (seconds, only if not using FILM)", min_value=0.01, max_value=5.0, value=0.1, step=0.01)
         
         # Right Column: Inter-frame Interpolator Parameters (FILM)
         with col_right:
@@ -273,9 +272,12 @@ def main():
             st.markdown("##### Inter-frame Interpolator Parameters")
             default_use_film = preset_film if preset_film is not None else True
             use_film = st.checkbox("Use FILM interpolation", value=default_use_film, help="Frame Interpolation for Large Motion - creates smooth transitions")
-            film_fps = st.number_input("FILM FPS (1–120)", min_value=1, max_value=120, value=30, help="Output video frames per second")
             film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=3, 
                                              help="Higher values create more intermediate frames (smoother but slower)")
+            # Set default FPS based on whether FILM is enabled
+            default_fps = 30 if use_film else 4
+            output_fps = st.number_input("Output FPS (1–120)", min_value=1, max_value=120, value=default_fps, 
+                                    help="Output video frames per second")
             st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -308,8 +310,6 @@ def main():
             os.makedirs(output_dir, exist_ok=True)
             os.makedirs(film_output_dir, exist_ok=True)
             
-            duration_ms = int(keyframe_duration * 1000)
-            
             actual_model_path = (
                 "lykon/dreamshaper-7" if model_option == "Dreamshaper-7 (fine-tuned SD V1-5)" 
                 else "stabilityai/stable-diffusion-2-1-base" if model_option == "Base Stable Diffusion V2-1"
@@ -327,7 +327,7 @@ def main():
                 "--output_path", output_dir,
                 "--film_output_folder", film_output_dir,
                 "--num_frames", str(num_frames),
-                "--duration", str(duration_ms)
+                "--fps", str(output_fps)
             ]
             
             if enable_lcm_lora:
@@ -339,8 +339,7 @@ def main():
             if use_film:
                 cmd.append("--use_film")
             
-            # Add film parameters
-            cmd.extend(["--film_fps", str(film_fps)])
+            # Add film recursion parameter
             cmd.extend(["--film_num_recursions", str(film_recursions)])
             
             # If SLAB execution is enabled, prepend the srun command prefix.
