@@ -74,8 +74,8 @@ def parse_arguments():
         help="Number of keyframes to generate (default: %(default)s)"
     )
     parser.add_argument(
-        "--duration", type=int, default=100,
-        help="Duration of each keyframe in the final .gif (default: %(default)s ms)"
+        "--fps", type=int, default=30,
+        help="FPS for the output video (default: %(default)s)"
     )
     parser.add_argument(
         "--no_lora", action="store_true",
@@ -98,10 +98,6 @@ def parse_arguments():
     parser.add_argument(
         "--film_output_folder", type=str, default="./FILM_Results",
         help="Folder where FILM's final interpolated video is saved (default: %(default)s)"
-    )
-    parser.add_argument(
-        "--film_fps", type=int, default=30,
-        help="FPS for the final video - 'Pseudo-Playback-Speed', since total frames are same (default: %(default)s)"
     )
     parser.add_argument(
         "--film_num_recursions", type=int, default=3,
@@ -127,8 +123,7 @@ def run_diffmorpher(args):
         "--output_path", args.output_path,
         "--save_lora_dir", args.save_lora_dir,
         "--lamb", str(args.lamb),
-        "--num_frames", str(args.num_frames),
-        "--duration", str(args.duration),
+        "--num_frames", str(args.num_frames)
     ]
 
     if args.load_lora_path_0:
@@ -157,7 +152,7 @@ def run_diffmorpher(args):
     end = time.time()
     print(f"[INFO] DiffMorpher completed in {end - start:.2f} seconds.")
 
-def create_simple_video_from_keyframes(keyframes_folder, output_folder, fps=40):
+def create_simple_video_from_keyframes(keyframes_folder, output_folder, fps):
     """
     If the user does NOT want FILM, we still make a basic video from keyframes.
     Assumes frames are saved as .png or .jpg in keyframes_folder.
@@ -226,7 +221,7 @@ def main():
         success = run_film_interpolation(
             input_folder=keyframes_folder,
             output_folder=args.film_output_folder,
-            fps=args.film_fps,
+            fps=args.fps,
             num_recursions=args.film_num_recursions
         )
         
@@ -241,7 +236,7 @@ def main():
         create_simple_video_from_keyframes(
             keyframes_folder=keyframes_folder,
             output_folder=args.film_output_folder,
-            fps=args.film_fps
+            fps=args.fps
         )
 
     # 5) Print total execution time
