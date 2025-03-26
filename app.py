@@ -280,7 +280,7 @@ def main():
             preset_film = False
             preset_lcm = False
         elif preset_option.startswith("Low quality"):
-            preset_model = "Base Stable Diffusion V1-5"
+            preset_model = "Base Stable Diffusion V2-1"
             preset_film = False
             preset_lcm = True
         elif preset_option.startswith("Creative morph"):
@@ -364,6 +364,7 @@ def main():
                     st.session_state.use_film = use_film
                     st.session_state.film_recursions = film_recursions
                     st.session_state.output_fps = output_fps
+                    st.session_state.using_slab = using_slab
                     
                     # Switch to processing page
                     start_processing()
@@ -422,6 +423,7 @@ def main():
                 use_film = st.session_state.use_film
                 film_recursions = st.session_state.film_recursions
                 output_fps = st.session_state.output_fps
+                using_slab = st.session_state.using_slab
                 
                 # Save uploaded images
                 imgA_path = os.path.join(temp_dir, "imageA.png")
@@ -511,21 +513,12 @@ def main():
                         st.rerun()
                     else:
                         st.error("No output video was generated. Check logs for details.")
-                        if st.button("Return to Settings"):
-                            return_to_input()
-                            st.rerun()
                         
                 except subprocess.CalledProcessError as e:
                     st.error(f"Error running morphing pipeline: {e}")
-                    if st.button("Return to Settings"):
-                        return_to_input()
-                        st.rerun()
                 
             except Exception as e:
                 st.error(f"An error occurred during processing: {e}")
-                if st.button("Return to Settings"):
-                    return_to_input()
-                    st.rerun()
 
     # =============== RESULT PAGE ===============
     elif st.session_state.page == 'result':
@@ -551,7 +544,7 @@ def main():
             unsafe_allow_html=True
         )
         
-        # Show the download button
+        # Show the result video and download button
         try:
             if st.session_state.final_video_path:
                 # Display video preview
