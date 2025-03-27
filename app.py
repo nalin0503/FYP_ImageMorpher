@@ -326,7 +326,7 @@ def main():
                 st.markdown("##### Inter-frame Interpolator Parameters")
                 default_use_film = preset_film if preset_film is not None else True
                 use_film = st.checkbox("Use FILM interpolation", value=default_use_film, help="Frame Interpolation for Large Motion - creates smooth transitions")
-                film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=4, 
+                film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=8, value=4, 
                                                 help="Higher values create more intermediate frames (smoother but slower)")
                 # Set default FPS based on whether FILM is enabled
                 default_fps = 30 if use_film else 8
