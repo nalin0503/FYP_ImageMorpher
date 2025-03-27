@@ -310,7 +310,7 @@ def main():
             # Left Column: Keyframe Generator Parameters
             with col_left:
                 st.markdown("##### Keyframe Generator Parameters")
-                num_frames = st.number_input("Number of keyframes (2–30)", min_value=2, max_value=30, value=18)
+                num_frames = st.number_input("Number of keyframes (2–30)", min_value=2, max_value=30, value=16)
                 lcm_default = preset_lcm if preset_lcm is not None else False
                 enable_lcm_lora = st.checkbox(
                     "Enable LCM-LoRA",
@@ -326,7 +326,7 @@ def main():
                 st.markdown("##### Inter-frame Interpolator Parameters")
                 default_use_film = preset_film if preset_film is not None else True
                 use_film = st.checkbox("Use FILM interpolation", value=default_use_film, help="Frame Interpolation for Large Motion - creates smooth transitions")
-                film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=3, 
+                film_recursions = st.number_input("FILM recursion passes (1–6)", min_value=1, max_value=6, value=4, 
                                                 help="Higher values create more intermediate frames (smoother but slower)")
                 # Set default FPS based on whether FILM is enabled
                 default_fps = 30 if use_film else 8
@@ -389,7 +389,7 @@ def main():
             """
             <div class="processing-container">
                 <h2 class="processing-text">Processing Your Morphing Request</h2>
-                <p>Please wait while we generate your morphing video...</p>
+                <p>Please wait while we generate your morphing video... do not change any settings.</p>
             </div>
             """, 
             unsafe_allow_html=True
