@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metamorph - Additional Parameters</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <img src="metamorphLogo_nobg.png" alt="Metamorph Logo" class="logo">
+                <h1>Metamorph</h1>
+            </div>
+            <p class="subtitle">DiffMorpher + LCM-LoRA + FILM</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="keyframe.html">Keyframe Generator</a></li>
+                <li><a href="film.html">FILM Interpolation</a></li>
+                <li><a href="misc.html" class="active">Additional Parameters</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="intro">
+                <h2>Additional Parameters</h2>
+                <p>Beyond the core keyframe generation and FILM interpolation settings, Metamorph offers several additional parameters that affect your final output. This page explains these parameters and provides guidance on how to use them effectively.</p>
+            </section>
+
+            <section class="output-params">
+                <h2>Output Parameters</h2>
+                
+                <div class="param-section">
+                    <h3>Output FPS</h3>
+                    <p>The frames per second setting for your final video output. This parameter determines how quickly the morphing sequence plays back.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>Range:</strong> 1-120 FPS</p>
+                        <p><strong>Common settings:</strong></p>
+                        <ul>
+                            <li><strong>24 FPS:</strong> Cinematic look, standard for film</li>
+                            <li><strong>30 FPS:</strong> Balanced option, good for most uses (recommended default)</li>
+                            <li><strong>60 FPS:</strong> Very smooth motion, good for detailed transitions</li>
+                        </ul>
+                        <p><strong>Note:</strong> The FPS setting doesn't affect the number of frames generated or the quality of those frames. It only affects how quickly they play back in the final video. Higher FPS values will make the morphing sequence appear faster unless you compensate by generating more frames.</p>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>Calculating Video Duration</h3>
+                    <p>You can calculate the expected duration of your video using the following formula:</p>
+                    
+                    <div class="equation">
+                        Duration (seconds) = Total Frames ÷ Output FPS
+                    </div>
+                    
+                    <p>Remember that the total number of frames depends on the number of keyframes and, if FILM is enabled, the recursion setting:</p>
+                    
+                    <div class="equation">
+                        Total Frames = (2<sup>K</sup> + 1) × (num_keyframes − 1)
+                    </div>
+                    
+                    <div class="tech-details">
+                        <p><strong>Examples:</strong></p>
+                        <table style="width:100%; text-align:center; border-collapse:collapse; margin:1.5rem 0;">
+                            <thead>
+                                <tr>
+                                    <th style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.2);">Keyframes</th>
+                                    <th style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.2);">FILM Recursions (K)</th>
+                                    <th style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.2);">Total Frames</th>
+                                    <th style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.2);">FPS</th>
+                                    <th style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.2);">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">10</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">3</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">81</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">30</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">2.7 seconds</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">18</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">3</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">153</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">24</td>
+                                    <td style="padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">6.4 seconds</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0.5rem;">24</td>
+                                    <td style="padding:0.5rem;">4</td>
+                                    <td style="padding:0.5rem;">391</td>
+                                    <td style="padding:0.5rem;">60</td>
+                                    <td style="padding:0.5rem;">6.5 seconds</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="preset-options">
+                <h2>Preset Options</h2>
+                <p>Metamorph offers several presets to help you quickly configure the pipeline for different use cases:</p>
+                
+                <div class="param-grid">
+                    <div class="param-card">
+                        <h3 class="param-name">Maximum quality, longest inference time 🏆</h3>
+                        <p class="param-description">Optimized for the highest possible quality output, regardless of processing time.</p>
+                        <div class="tech-details">
+                            <p><strong>Settings:</strong></p>
+                            <ul>
+                                <li>Model: Base Stable Diffusion V2-1</li>
+                                <li>FILM: Enabled</li>
+                                <li>LCM-LoRA: Disabled</li>
+                                <li>AdaIN: Enabled</li>
+                                <li>Reschedule: Enabled</li>
+                            </ul>
+                            <p><strong>Best for:</strong> Final renders and professional outputs where quality is the primary concern.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="param-card">
+                        <h3 class="param-name">Medium quality, medium inference time ⚖️</h3>
+                        <p class="param-description">A balanced approach that provides good quality with reasonable processing times.</p>
+                        <div class="tech-details">
+                            <p><strong>Settings:</strong></p>
+                            <ul>
+                                <li>Model: Base Stable Diffusion V2-1</li>
+                                <li>FILM: Disabled</li>
+                                <li>LCM-LoRA: Disabled</li>
+                                <li>AdaIN: Enabled</li>
+                                <li>Reschedule: Enabled</li>
+                            </ul>
+                            <p><strong>Best for:</strong> Testing and iteration phases where you want to evaluate results quickly but still maintain decent quality.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="param-card">
+                        <h3 class="param-name">Low quality, shortest inference time ⚡</h3>
+                        <p class="param-description">Prioritizes speed over quality for rapid testing and prototyping.</p>
+                        <div class="tech-details">
+                            <p><strong>Settings:</strong></p>
+                            <ul>
+                                <li>Model: Base Stable Diffusion V2-1</li>
+                                <li>FILM: Disabled</li>
+                                <li>LCM-LoRA: Enabled</li>
+                                <li>AdaIN: Enabled</li>
+                                <li>Reschedule: Enabled</li>
+                            </ul>
+                            <p><strong>Best for:</strong> Quick previews and rapid iteration during early development stages.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="param-card">
+                        <h3 class="param-name">Creative morph 🎨</h3>
+                        <p class="param-description">Optimized for artistic and creative outputs with a good balance of quality and speed.</p>
+                        <div class="tech-details">
+                            <p><strong>Settings:</strong></p>
+                            <ul>
+                                <li>Model: Dreamshaper-7 (fine-tuned SD V1-5)</li>
+                                <li>FILM: Enabled</li>
+                                <li>LCM-LoRA: Enabled</li>
+                                <li>AdaIN: Enabled</li>
+                                <li>Reschedule: Enabled</li>
+                            </ul>
+                            <p><strong>Best for:</strong> Creative projects and artistic morphs where a unique aesthetic is desired.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="advanced-deployment">
+                <h2>Advanced Deployment Options</h2>
+                
+                <div class="param-section">
+                    <h3>Using SLAB GPU Cluster</h3>
+                    <p>This option is specifically for users with access to the SLAB GPU cluster environment. When enabled, the pipeline command will be prefixed with SLAB cluster execution parameters.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>How it works:</strong> Enabling this option adds the following prefix to the execution command:</p>
+                        <div class="code-sample">srun -p rtx3090_slab -w slabgpu05 --gres=gpu:1 --job-name=test --kill-on-bad-exit=1</div>
+                        <p><strong>When to use:</strong> Only enable this option if you are running Metamorph in a SLAB cluster environment and have the necessary permissions and setup. This option is not relevant for most users.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="best-practices">
+                <h2>Best Practices and Tips</h2>
+                
+                <div class="param-section">
+                    <h3>Image Selection</h3>
+                    <p>The quality of your morphing results is heavily influenced by the source images you select:</p>
+                    
+                    <div class="tech-details">
+                        <ul>
+                            <li><strong>Similar topology:</strong> Images with similar spatial arrangements of elements will morph more naturally</li>
+                            <li><strong>Matching dimensions:</strong> Images should have the same aspect ratio and ideally the same resolution</li>
+                            <li><strong>Consistent lighting:</strong> Similar lighting conditions between images help create smoother transitions</li>
+                            <li><strong>Clean backgrounds:</strong> Simple or matching backgrounds reduce visual artifacts during morphing</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>Parameter Optimization Workflow</h3>
+                    <p>For the most efficient workflow when creating high-quality morphs:</p>
+                    
+                    <div class="tech-details">
+                        <ol>
+                            <li><strong>Start with a quick test:</strong> Use the "Low quality, shortest inference time" preset with a small number of keyframes (6-8) to quickly evaluate if your image pair will morph well together</li>
+                            <li><strong>Iterative refinement:</strong> If the initial results look promising, gradually increase keyframes and quality settings</li>
+                            <li><strong>Fine-tune text prompts:</strong> If using text descriptions, adjust them to guide the semantic transition</li>
+                            <li><strong>Final render:</strong> Once satisfied with the preview results, use the "Maximum quality" preset for your final output</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Metamorph. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

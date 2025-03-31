@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metamorph - Keyframe Generator Parameters</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <img src="metamorphLogo_nobg.png" alt="Metamorph Logo" class="logo">
+                <h1>Metamorph</h1>
+            </div>
+            <p class="subtitle">DiffMorpher + LCM-LoRA + FILM</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="keyframe.html" class="active">Keyframe Generator</a></li>
+                <li><a href="film.html">FILM Interpolation</a></li>
+                <li><a href="misc.html">Additional Parameters</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="intro">
+                <h2>Keyframe Generator Parameters</h2>
+                <p>The keyframe generator is the foundation of the Metamorph pipeline, powered by DiffMorpher with additional enhancements. It creates a sequence of interpolated frames between your source images, establishing the core structure of your morphing effect.</p>
+            </section>
+
+            <section class="model-selection">
+                <h2>Model Selection</h2>
+                <p>Metamorph supports multiple diffusion model architectures, each with its own strengths and characteristics:</p>
+                
+                <div class="param-grid">
+                    <div class="param-card">
+                        <h3 class="param-name">Base Stable Diffusion V1-5</h3>
+                        <p class="param-description">The original Stable Diffusion model that offers a balanced approach to image generation.</p>
+                        <div class="tech-details">
+                            <p><strong>Best for:</strong> General-purpose morphing with good quality and reasonable inference time.</p>
+                            <p><strong>Technical details:</strong> 512×512 native resolution, strong understanding of general concepts and objects.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="param-card">
+                        <h3 class="param-name">Dreamshaper-7 (fine-tuned SD V1-5)</h3>
+                        <p class="param-description">A fine-tuned version of Stable Diffusion V1-5 optimized for artistic and creative outputs.</p>
+                        <div class="tech-details">
+                            <p><strong>Best for:</strong> Artistic morphs with enhanced details and creative interpretations.</p>
+                            <p><strong>Technical details:</strong> Based on SD V1-5 but with improved aesthetic quality and creative elements.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="param-card">
+                        <h3 class="param-name">Base Stable Diffusion V2-1</h3>
+                        <p class="param-description">An advanced version of Stable Diffusion with improved image quality and understanding.</p>
+                        <div class="tech-details">
+                            <p><strong>Best for:</strong> High-quality morphing requiring precise details and realistic transitions.</p>
+                            <p><strong>Technical details:</strong> 768×768 native resolution, better understanding of complex scenes and compositions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="keyframe-params">
+                <h2>Keyframe Generation Parameters</h2>
+                
+                <div class="param-section">
+                    <h3>Number of Keyframes</h3>
+                    <p>Determines how many intermediate frames will be generated between your two source images. More keyframes result in smoother transitions but increase generation time.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>Recommended settings:</strong></p>
+                        <ul>
+                            <li><strong>Minimal:</strong> 4-8 frames (very fast but less smooth)</li>
+                            <li><strong>Balanced:</strong> 12-18 frames (good balance between quality and speed)</li>
+                            <li><strong>Maximum quality:</strong> 24-30 frames (very smooth but slower generation)</li>
+                        </ul>
+                        <p><strong>Note:</strong> When combined with FILM interpolation, even a small number of keyframes can result in a smooth final video.</p>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>LCM-LoRA Acceleration</h3>
+                    <p>Latent Consistency Models with Low-Rank Adaptation (LCM-LoRA) is a universal acceleration module that dramatically reduces inference time while maintaining most of the quality of the original diffusion process.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>How it works:</strong> LCM-LoRA uses a modified sampling approach that requires significantly fewer steps (often 4-8 instead of 50+) by leveraging the self-consistency property of diffusion models.</p>
+                        <p><strong>Performance impact:</strong> Can accelerate generation by 5-10x with minimal quality loss.</p>
+                        <p><strong>When to use:</strong> Enable when faster generation is required. Particularly effective when combined with FILM interpolation, as any minor quality reduction is often masked by the interpolation process.</p>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>Adaptive Instance Normalization (AdaIN)</h3>
+                    <p>Adaptive Instance Normalization improves the smoothness of transitions by normalizing the statistical properties of interpolated latent spaces.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>How it works:</strong> AdaIN adjusts the mean and standard deviation of the interpolated latent noises per channel, enabling smoother transitions when denoised.</p>
+                        <p><strong>Technical formula:</strong></p>
+                        <div class="code-sample">AdaIN(x, y) = σ(y) * (x - μ(x)) / σ(x) + μ(y)</div>
+                        <p>where x is the content input, y is the style input, μ is the mean, and σ is the standard deviation.</p>
+                        <p><strong>Recommendation:</strong> Keep enabled for most morphing scenarios for smoother results.</p>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>Reschedule Sampling</h3>
+                    <p>This advanced technique creates a non-linear sampling schedule based on perceptual distances between frames, ensuring more uniform visual changes across the morphing sequence.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>How it works:</strong> The system first computes perceptual distances (LPIPS) between consecutive frames in an initial linear sampling pass, then uses these measurements to create a second, non-linear sampling schedule.</p>
+                        <p><strong>Benefits:</strong> Ensures more uniform perceptual changes across the entire morphing sequence, avoiding "jumps" or inconsistent transitions.</p>
+                        <p><strong>Recommendation:</strong> Keep enabled for most morphing scenarios. Particularly valuable for complex morphs between significantly different images.</p>
+                    </div>
+                </div>
+                
+                <div class="param-section">
+                    <h3>Text Description (Prompts)</h3>
+                    <p>Optional text descriptions for both source images enable text embedding interpolation, providing additional semantic guidance to the morphing process.</p>
+                    
+                    <div class="tech-details">
+                        <p><strong>How it works:</strong> The system interpolates between the text embeddings of both prompts in parallel with the visual content, helping to maintain semantic coherence.</p>
+                        <p><strong>Best practices:</strong></p>
+                        <ul>
+                            <li>Use concise, descriptive prompts that highlight key elements of each image</li>
+                            <li>Include important visual elements, styles, and moods</li>
+                            <li>Keep prompts somewhat similar in structure for smoother semantic transitions</li>
+                        </ul>
+                        <p><strong>Example:</strong> Image A: "Portrait of a young woman with blonde hair" → Image B: "Portrait of an elderly woman with gray hair"</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="examples">
+                <h2>Example Results</h2>
+                <p>Below are examples of keyframes generated using different parameter combinations:</p>
+                
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="/api/placeholder/400/300" alt="Example 1: Standard settings" />
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/api/placeholder/400/300" alt="Example 2: With LCM-LoRA" />
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/api/placeholder/400/300" alt="Example 3: With AdaIN and reschedule" />
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Metamorph. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
