@@ -14,16 +14,7 @@
       <i>NTU Final Year Project on Advanced Image Morphing via Diffusion Models with Frame Interpolation for Large Motion (FILM)</i>
    </p>
    
-   <div style="display: flex; justify-content: center; gap: 20px;">
-      <video width="290" autoplay loop muted playsinline>
-         <source src="img/interpolated.mp4" type="video/mp4">
-         Your browser does not support the video tag.
-      </video>
-      <video width="290" autoplay loop muted playsinline>
-         <source src="sample_runs/sample_run_1/film_output_20250327_102142/output_video_20250327_102705.mp4" type="video/mp4">
-         Your browser does not support the video tag.
-      </video>
-   </div>
+   <img width="350" src="img/interpolated.gif" alt="Sample Result">
 </div>
 
 ## 🌟 Overview
@@ -36,18 +27,18 @@ Metamorph is a state-of-the-art image morphing framework that combines diffusion
 - **Web Interface**: User-friendly Streamlit application for easy morphing
 
 <div align="center">
-   <img src="assets/pipeline_diagram.png" alt="Metamorph Pipeline" width="800"/>
+   <img src="img/pipeline_diagram.png" alt="Metamorph Pipeline" width="800"/>
 </div>
 
 ## 📁 Repository Structure
 
 <div align="center">
-   <img src="assets/repo_hierarchy.png" alt="Repository Hierarchy" width="700"/>
+   <img src="img/repo.png" alt="Repository Hierarchy" width="500"/>
 </div>
 
 - **Makefile**: Build automation and dependency management
 - **run_morphing.py**: Controller layer that orchestrates keyframe generation and interpolation
-- **DiffMorpher/**: Submodule for keyframe generation
+- **DiffMorpher/**: Submodule utilized for keyframe generation
   - **main.py**: Entry point for LCM-LoRA integration and memory optimizations
   - **utils.py**: Contains the DiffMorpherPipeline and model definitions
 - **FILM.py**: Implements recursive frame interpolation for smoothing keyframes
@@ -59,8 +50,8 @@ Metamorph is a state-of-the-art image morphing framework that combines diffusion
 - **Model Selection**: Choose from multiple diffusion models for different aesthetic results
 - **Acceleration Options**: Toggle LCM-LoRA to significantly reduce processing time
 - **Advanced Interpolation**: Apply recursive FILM processing for smoother results
-- **Text Guidance**: Optional text prompts to guide the semantic transition
-- **Improved Keyframes**: Enhanced with AdaIN and rescheduled sampling for better coherence
+- **Text Guidance**: Optional text prompts to guide the semantic transition (retained from [DiffMorpher](https://github.com/Kevin-thu/DiffMorpher))
+- **Improved Keyframes**: Enhanced with AdaIN and rescheduled sampling for better coherence (retained from [DiffMorpher](https://github.com/Kevin-thu/DiffMorpher))
 - **User-Friendly Interface**: Simple web application to control all parameters
 
 ## 🛠️ Installation
@@ -84,7 +75,7 @@ As recommended by [FILM](https://github.com/google-research/frame-interpolation)
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/FYP_ImageMorpher.git
+   git clone https://github.com/nalin0503/FYP_ImageMorpher.git
    cd FYP_ImageMorpher
    ```
 
@@ -115,19 +106,20 @@ For NTU SLAB GPU cluster users, select the "Using SLAB GPU Cluster" option in th
 Use `run_morphing.py` as the overall orchestration script:
 ```bash
 python run_morphing.py \
-  --image_path_0 ./assets/Trump.jpg \
+  --image_path_0 DiffMorpher/assets/Trump.jpg \
   --prompt_0 "A photo of an American man" \
-  --image_path_1 ./assets/Biden.jpg \
+  --image_path_1 DiffMorpher/assets/Biden.jpg \
   --prompt_1 "A photo of an American man" \
-  --output_path ./results/Trump_Biden \
+  --output_path /results/Trump_Biden \
   --use_adain \
   --use_reschedule \
   --save_inter \
   --num_frames 16 \
   --duration 100 \
   --use_film \
+  --film_output_folder "FILM_Results"
   --film_fps 30 \
-  --film_num_recursions 3
+  --film_num_recursions 4
 ```
 
 ### Option 3: Using Makefile
@@ -142,15 +134,15 @@ Use the base DiffMorpher for keyframe generation only:
 ```bash
 cd DiffMorpher
 python main.py \
-  --image_path_0 ./assets/Trump.jpg \
-  --image_path_1 ./assets/Biden.jpg \
+  --image_path_0 /assets/Trump.jpg \
+  --image_path_1 /assets/Biden.jpg \
   --prompt_0 "A photo of an American man" \
   --prompt_1 "A photo of an American man" \
-  --output_path "./results/Trump_Biden" \
+  --output_path "/results/Trump_Biden" \
   --use_adain \
   --use_reschedule \
   --save_inter \
-  --use_lcm
+#   --use_lcm
 ```
 
 For NTU SLAB GPU cluster users:
@@ -169,18 +161,14 @@ srun -p rtx3090_slab -w slabgpu05 --gres=gpu:1 \
   --use_lcm
 ```
 
-## 📊 Components
+## 📊 Key Components
 
-### DiffMorpher
+### LCM-LoRA Acceleration
 
-DiffMorpher leverages latent consistency models to create intermediate keyframes between source images. Enhanced with:
-
-- **Adaptive Instance Normalization (AdaIN)**: Adjusts statistical properties of interpolated latent spaces
-- **Reschedule Sampling**: Creates non-linear sampling schedules based on perceptual distances
-- **LCM-LoRA Acceleration**: Reduces sampling steps while preserving quality
+DiffMorpher optionally leverages latent consistency models to create intermediate keyframes between source images. LCM-LoRA is a set of weights applied on top of the Latent Diffusion Model utilized to accelerate generation by reducing sampling steps required, while being almost lossless.
 
 <div align="center">
-   <img src="assets/keyframe_diagram.png" alt="DiffMorpher Keyframe Generation" width="700"/>
+   <img src="img/lcmlora.png" alt="DiffMorpher Keyframe Generation" width="300"/>
 </div>
 
 ### FILM Interpolation
@@ -192,19 +180,19 @@ Frame Interpolation for Large Motion (FILM) is particularly effective at handlin
 - **Detail Preservation**: Maintain fine details during the interpolation process
 
 <div align="center">
-   <img src="assets/film_diagram.png" alt="FILM Interpolation Process" width="700"/>
+   <img src="img/filmexample.png" alt="FILM Interpolation Process" width="400"/>
 </div>
 
 ## 📖 Documentation
 
-For detailed parameter explanations and usage guidelines, visit our [GitHub Pages documentation](https://username.github.io/FYP_ImageMorpher/).
+For detailed parameter explanations and usage guidelines, visit our [GitHub Pages documentation](https://nalin0503.github.io/FYP_ImageMorpher/).
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/username/FYP_ImageMorpher)
-- [DiffMorpher Submodule](https://github.com/username/DiffMorpher)
-- [Hugging Face Demo](https://huggingface.co/spaces/username/metamorph)
+- [DiffMorpher Submodule](https://github.com/nalin0503/DiffMorpher)
+- [Hugging Face Demo](https://huggingface.co/spaces/nalin0503/metamorph)
 - [FILM Repository](https://github.com/google-research/frame-interpolation)
+- [Original DiffMorpher](https://github.com/Kevin-thu/DiffMorpher)
 
 ## 📋 Citation
 
@@ -213,7 +201,7 @@ If you use Metamorph in your research, please cite our work:
 ```bibtex
 @misc{author2025metamorph,
   title={Metamorph: Enhancing Image Morphing with Diffusion Models and Frame Interpolation},
-  author={Author, A.},
+  author={Sharma, Nalin},
   year={2025},
   howpublished={Nanyang Technological University, Final Year Project}
 }
@@ -228,4 +216,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Stable Diffusion](https://github.com/CompVis/stable-diffusion) for the foundation models
 - [Google Research FILM](https://github.com/google-research/frame-interpolation) for the interpolation framework
 - [Latent Consistency Models](https://github.com/lucidrains/latent-consistency-model) for acceleration techniques
-- Nanyang Technological University for supporting this research
+- Nanyang Technological University, College of Computing and Data Science (NTU CCDS) for supporting this research.
