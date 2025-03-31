@@ -1,7 +1,0 @@
-2025-03-11 21:33:32,698 - INFO - Total execution time: 131.49 seconds
-2025-03-11 21:33:32,699 - INFO - Model Path: stabilityai/stable-diffusion-2-1-base
-2025-03-11 21:33:32,699 - INFO - Image Path 0: DiffMorpher/assets/Trump.jpg
-2025-03-11 21:33:32,700 - INFO - Image Path 1: DiffMorpher/assets/Biden.jpg
-2025-03-11 21:33:32,700 - INFO - Use LCM: False
-2025-03-11 21:33:32,700 - INFO - Number of inference steps: 50
-2025-03-11 21:33:32,700 - INFO - Guidance scale: 1

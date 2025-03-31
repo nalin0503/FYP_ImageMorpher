@@ -184,7 +184,7 @@ def main():
         return
 
     # Load logo path for all pages
-    logo_path = "metamorphLogo_nobg.png"
+    logo_path = "img/metamorphLogo_nobg.png"
     logo_exists = os.path.exists(logo_path)
     logo_base64 = None
     
