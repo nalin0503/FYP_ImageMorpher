@@ -21,7 +21,6 @@ init: submodule
 	$(PYTHON) -m pip install -r requirements.txt
 
 # Run morphing pipeline with FILM
-# (TODO - configure CLI run command to be able to run make morph FRAMES=30 FILM=true)
 morph:
 	$(PYTHON) $(MAIN_SCRIPT) \
 		--image_path_0 ./assets/Trump.jpg \
@@ -38,7 +37,15 @@ morph:
 		--film_fps 30 \
 		--film_num_recursions 3
 
-### Add more options here later, make install, make init (install reqs)
+streamlit:
+	@echo "Starting Streamlit web interface..."
+	streamlit run app.py
+
+clean:
+	@echo "Cleaning up output directories..."
+	rm -rf ./temp_run/*
+	rm -rf ./lora/*
+	@echo "Cleanup complete."
 
 # Help message
 help:
@@ -48,4 +55,6 @@ help:
 	@echo "  make init      - Install dependencies and set up the environment"
 	@echo "  make submodule - Initialize and update Git submodules"
 	@echo "  make morph     - Run the morphing pipeline with FILM"
+	@echo "  make streamlit - Run the morphing pipeline on the streamlit app"
+	@echo "  make clean     - Cleanup temporary directories and lora ckpts to free-up memory"
 	@echo "  make help      - Show this help message"
