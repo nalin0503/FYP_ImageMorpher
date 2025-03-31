@@ -477,6 +477,7 @@ def main():
                 cmd.extend(["--film_num_recursions", str(film_recursions)])
                 
                 # If SLAB execution is enabled, prepend the srun command prefix.
+                # Note: Only 'slabgpu05' had the appropriate CuDNN libraries installed
                 if using_slab:
                     slab_prefix = [
                         "srun", "-p", "rtx3090_slab", "-w", "slabgpu05", "--gres=gpu:1",
