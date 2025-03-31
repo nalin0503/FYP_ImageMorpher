@@ -1,12 +1,19 @@
+"""Metamorph: Web application for image morphing.
+
+This module provides a Streamlit web interface for DiffMorpher + LCM-LoRA + FILM
+image morphing pipeline.
+"""
 import os
 import sys
 import subprocess
 import base64
 import datetime
 from io import BytesIO
+from typing import Tuple, Optional, List, Dict, Any, Union
 
 import streamlit as st
 from PIL import Image
+
 
 # Set Streamlit page configuration (centered content via CSS)
 st.set_page_config(
@@ -15,19 +22,40 @@ st.set_page_config(
     page_icon="🌀"
 )
 
-def save_uploaded_file(uploaded_file, dst_path):
-    """Save an uploaded file to a destination path."""
+
+def save_uploaded_file(uploaded_file: Any, dst_path: str) -> None:
+    """Save an uploaded file to a destination path.
+
+    Args:
+        uploaded_file: The uploaded file object from Streamlit.
+        dst_path: Destination path where the file will be saved.
+    """
     with open(dst_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-def get_img_as_base64(img):
-    """Convert PIL Image to base64 for embedding in HTML."""
+
+def get_img_as_base64(img: Image.Image) -> str:
+    """Convert PIL Image to base64 for embedding in HTML.
+
+    Args:
+        img: PIL Image object to convert.
+
+    Returns:
+        Base64 encoded string representation of the image.
+    """
     buffered = BytesIO()
     img.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-def ensure_scripts_exist():
-    """Check if the required script files exist."""
+
+def ensure_scripts_exist() -> Tuple[bool, str]:
+    """Check if the required script files exist.
+
+    Returns:
+        Tuple containing:
+            - Boolean indicating if all required scripts exist.
+            - Error message string if scripts are missing, empty string otherwise.
+    """
     required_scripts = ["run_morphing.py", "FILM.py"]
     missing_scripts = [script for script in required_scripts if not os.path.exists(script)]
     
@@ -36,8 +64,13 @@ def ensure_scripts_exist():
         return False, error_msg
     return True, ""
 
-def create_temp_folder():
-    """Create a persistent temporary folder in the repo for processing."""
+
+def create_temp_folder() -> str:
+    """Create a persistent 'temporary' folder in the repo for processing.
+
+    Returns:
+        Path to the created temporary folder.
+    """
     base_folder = os.path.join(os.getcwd(), "temp_run")
     os.makedirs(base_folder, exist_ok=True)
     # Create a subfolder with a timestamp to avoid collisions
@@ -45,7 +78,9 @@ def create_temp_folder():
     os.makedirs(run_folder)
     return run_folder
 
-def main():
+
+def main() -> None:
+    """Main application function that sets up and runs the Streamlit interface."""
     # Initialize session state variables
     if 'page' not in st.session_state:
         st.session_state.page = 'input'  # States: 'input', 'processing', 'result'
@@ -60,12 +95,14 @@ def main():
         st.session_state.process_started = False
         
     # Function to switch to processing page and start morphing
-    def start_processing():
+    def start_processing() -> None:
+        """Switch to processing page and reset processing flag."""
         st.session_state.page = 'processing'
         st.session_state.process_started = False  # Will be set to True when processing starts
         
     # Function to return to input page
-    def return_to_input():
+    def return_to_input() -> None:
+        """Return to input page and reset all processing state variables."""
         st.session_state.page = 'input'
         st.session_state.temp_dir = None
         st.session_state.final_video_path = None
