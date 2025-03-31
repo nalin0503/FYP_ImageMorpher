@@ -182,15 +182,6 @@ def run_diffmorpher(args: argparse.Namespace) -> None:
     if args.use_lcm:
         cmd.append("--use_lcm")
 
-    logger.info("Running DiffMorpher with command:")
-    logger.info(" ".join(cmd))
-    
-    # Log relevant parameters
-    logger.info(f"Input images: {args.image_path_0} and {args.image_path_1}")
-    logger.info(f"Number of frames: {args.num_frames}")
-    logger.info(f"Using LCM-LoRa: {args.use_lcm}")
-    logger.info(f"Using AdaIN: {args.use_adain}")
-    logger.info(f"Using LoRA: {not args.no_lora}")
     
     start = time.time()
     subprocess.run(cmd, check=True)
