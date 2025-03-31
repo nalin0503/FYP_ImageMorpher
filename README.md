@@ -22,7 +22,7 @@
 Metamorph is a state-of-the-art image morphing framework that combines diffusion-based generative models with frame interpolation techniques to create smooth, high-quality transitions between images. The system integrates:
 
 - **DiffMorpher**: Creates keyframe sequences using latent space interpolation in diffusion models
-- **LCM-LoRA**: Accelerates the diffusion process with almost no quality loss
+- **LCM-LoRA**: Accelerates the reverse diffusion process, nearly lossless quality
 - **FILM**: Performs advanced frame interpolation for ultra-smooth transitions
 - **Web Interface**: User-friendly Streamlit application for easy morphing
 
@@ -40,7 +40,6 @@ Metamorph is a state-of-the-art image morphing framework that combines diffusion
 - **run_morphing.py**: Controller layer that orchestrates keyframe generation and interpolation
 - **DiffMorpher/**: Submodule utilized for keyframe generation
   - **main.py**: Entry point for LCM-LoRA integration and memory optimizations
-  - **utils.py**: Contains the DiffMorpherPipeline and model definitions
 - **FILM.py**: Implements recursive frame interpolation for smoothing keyframes
 - **app.py**: UI layer (Streamlit) for interactive morphing
 
@@ -150,11 +149,11 @@ For NTU SLAB GPU cluster users:
 cd DiffMorpher
 srun -p rtx3090_slab -w slabgpu05 --gres=gpu:1 \
   --job-name=test --kill-on-bad-exit=1 python main.py \
-  --image_path_0 ./assets/Trump.jpg \
-  --image_path_1 ./assets/Biden.jpg \
+  --image_path_0 /assets/Trump.jpg \
+  --image_path_1 /assets/Biden.jpg \
   --prompt_0 "A photo of an American man" \
   --prompt_1 "A photo of an American man" \
-  --output_path "./results/Trump_Biden" \
+  --output_path "/results/Trump_Biden" \
   --use_adain \
   --use_reschedule \
   --save_inter \
