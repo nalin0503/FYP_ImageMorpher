@@ -23,16 +23,8 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background: linear-gradient(315deg, var(--secondary-color), var(--primary-color));
-    background-size: 400% 400%;
-    animation: gradient 30s ease infinite;
     background-attachment: fixed;
     min-height: 100vh;
-}
-
-@keyframes gradient {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
 }
 
 .container {
