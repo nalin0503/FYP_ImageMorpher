@@ -33,7 +33,7 @@ Metamorph is a state-of-the-art image morphing framework that combines diffusion
 ## 📁 Repository Structure
 
 <div align="center">
-   <img src="img/repo.png" alt="Repository Hierarchy" width="500"/>
+   <img src="img/repo.png" alt="Repository Hierarchy" width="550"/>
 </div>
 
 - **Makefile**: Build automation and dependency management
