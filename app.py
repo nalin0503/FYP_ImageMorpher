@@ -254,6 +254,9 @@ def main() -> None:
                 Optionally, you can enable LCM-LoRA for accelerated inference (with slight decrease in quality).
                 Upload two images, optionally provide descriptions, and fine-tune the settings to create a smooth, high-quality morphing video.
             </p>
+            <p style='text-align: center; font-size: 1rem; margin-top: 0.5rem;'>
+                For further information on how to configure the parameters, please refer to the <a href="https://nalin0503.github.io/FYP_ImageMorpher/" target="_blank" style="color: #8e44ad; text-decoration: underline;">User Documentation</a>.
+            </p>
             <hr>
             """,
             unsafe_allow_html=True
