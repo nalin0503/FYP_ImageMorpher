@@ -212,6 +212,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgements
 
+- [DiffMorpher](https://github.com/Kevin-thu/DiffMorpher) for the base implementation
 - [Stable Diffusion](https://github.com/CompVis/stable-diffusion) for the foundation models
 - [Google Research FILM](https://github.com/google-research/frame-interpolation) for the interpolation framework
 - [Latent Consistency Models](https://github.com/lucidrains/latent-consistency-model) for acceleration techniques
