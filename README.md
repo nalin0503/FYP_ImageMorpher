@@ -89,6 +89,11 @@ As recommended by [FILM](https://github.com/google-research/frame-interpolation)
    - Update submodules to the latest commits
    - Install required Python packages
 
+3. Install CUDA and cuDNN:  
+   Ensure the required CUDA Toolkit and cuDNN versions are installed on your system (revisit the [Installation](#️-installation) section above for details).
+
+   > ⚠️ This is necessary to run the FILM algorithm.
+
 ## 🚀 Usage
 
 ### Option 1: Web Interface (Recommended)
