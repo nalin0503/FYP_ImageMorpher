@@ -91,9 +91,7 @@ You may install the relevant libraries at [CUDA and cuDNN official downloads](ht
    - Install required Python packages
 
 3. Install CUDA and cuDNN:  
-   Ensure the required CUDA Toolkit and cuDNN versions are installed on your system (revisit the [Installation](#️-installation) section above for details).
-
-   > ⚠️ This is necessary to run the FILM algorithm.
+   Ensure the required CUDA Toolkit and cuDNN versions are installed on your system (revisit the [FILM Dependencies](#film-dependencies) section above for details).
 
 ## 🚀 Usage
 
