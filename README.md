@@ -64,7 +64,6 @@ Metamorph is a state-of-the-art image morphing framework that combines diffusion
 ### FILM Dependencies
 
 As recommended by [FILM](https://github.com/google-research/frame-interpolation):
-- Anaconda Python 3.9
 - CUDA Toolkit 11.2.1
 - cuDNN 8.1.0
 
