@@ -67,7 +67,9 @@ As recommended by [FILM](https://github.com/google-research/frame-interpolation)
 - CUDA Toolkit 11.2.1
 - cuDNN 8.1.0
 
-> **Note**: If you encounter dependency conflicts, you may try: `conda install -c conda-forge cudatoolkit=11.8.0 cudnn=9.3.0`
+You may install the relevant libraries at [CUDA and cuDNN official downloads](https://developer.nvidia.com/cuda-zone "NVIDIA Developer Zone").
+
+> **Note**: If you encounter dependency conflicts during runs, you may try: `conda install -c conda-forge cudatoolkit=11.8.0 cudnn=9.3.0`
 
 ### Setup Instructions
 
