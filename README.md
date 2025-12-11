@@ -11,15 +11,17 @@
    [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
    
    <p align="center">
-      <i>NTU Final Year Project on Advanced Image Morphing via Diffusion Models with Frame Interpolation for Large Motion (FILM)</i>
+  <i>
+    NTU Final Year Project on Advanced Image Morphing via Diffusion Models with Frame Interpolation for Large Motion (FILM)<br>
+    Presentation slides link:  
+    <a href="https://tinyurl.com/FYPImageMorphing">tinyurl.com/FYPImageMorphing</a>
+  </i>
    </p>
    
    <img width="350" src="img/interpolated.gif" alt="Sample Result">
 </div>
 
 ## 🌟 Overview
-
-Presentation slides Link: https://tinyurl.com/FYPImageMorphing
 
 Metamorph is a state-of-the-art image morphing framework that combines diffusion-based generative models with frame interpolation techniques to create smooth, high-quality transitions between images. The system integrates:
 
