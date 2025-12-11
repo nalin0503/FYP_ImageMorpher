@@ -19,6 +19,8 @@
 
 ## 🌟 Overview
 
+Presentation slides Link: https://tinyurl.com/FYPImageMorphing
+
 Metamorph is a state-of-the-art image morphing framework that combines diffusion-based generative models with frame interpolation techniques to create smooth, high-quality transitions between images. The system integrates:
 
 - **DiffMorpher**: Creates keyframe sequences using latent space interpolation in diffusion models
